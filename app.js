@@ -5,6 +5,7 @@
   var dayNames = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
   var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   var majorTimes = [0, 360, 720, 1080, 1440];
+  var presetColors = ["#ed0027", "#ff4fa3", "#111111", "#ff8a00", "#ffd23f", "#22a06b", "#00a3ff", "#5856d6"];
   var state = loadState();
   var activeView = "weekly";
   var selectedDate = new Date();
@@ -45,6 +46,7 @@
     workplaceId: document.getElementById("workplaceId"),
     workplaceName: document.getElementById("workplaceName"),
     workplaceColor: document.getElementById("workplaceColor"),
+    colorPresets: document.getElementById("colorPresets"),
     workplaceError: document.getElementById("workplaceError"),
     workplaceList: document.getElementById("workplaceList"),
     cancelWorkplaceEdit: document.getElementById("cancelWorkplaceEdit")
@@ -54,6 +56,7 @@
 
   function init() {
     fillTimeOptions();
+    renderColorPresets();
     bindEvents();
     render();
   }
@@ -96,6 +99,7 @@
     els.deleteShiftBtn.addEventListener("click", deleteCurrentShift);
     els.workplaceForm.addEventListener("submit", saveWorkplaceFromForm);
     els.cancelWorkplaceEdit.addEventListener("click", resetWorkplaceForm);
+    els.workplaceColor.addEventListener("input", renderColorPresetSelection);
 
     document.querySelectorAll("[data-close]").forEach(function (button) {
       button.addEventListener("click", function () {
@@ -474,6 +478,7 @@
         els.workplaceId.value = workplace.id;
         els.workplaceName.value = workplace.name;
         els.workplaceColor.value = workplace.color;
+        renderColorPresetSelection();
         els.workplaceName.focus();
       });
       row.children[3].addEventListener("click", function () {
@@ -499,8 +504,33 @@
   function resetWorkplaceForm() {
     els.workplaceId.value = "";
     els.workplaceName.value = "";
-    els.workplaceColor.value = "#e60022";
+    els.workplaceColor.value = presetColors[0];
     els.workplaceError.textContent = "";
+    renderColorPresetSelection();
+  }
+
+  function renderColorPresets() {
+    els.colorPresets.innerHTML = "";
+    presetColors.forEach(function (color) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "color-preset";
+      button.style.backgroundColor = color;
+      button.setAttribute("aria-label", "Use color " + color);
+      button.dataset.color = color;
+      button.addEventListener("click", function () {
+        els.workplaceColor.value = color;
+        renderColorPresetSelection();
+      });
+      els.colorPresets.appendChild(button);
+    });
+    renderColorPresetSelection();
+  }
+
+  function renderColorPresetSelection() {
+    els.colorPresets.querySelectorAll(".color-preset").forEach(function (button) {
+      button.classList.toggle("selected", button.dataset.color.toLowerCase() === els.workplaceColor.value.toLowerCase());
+    });
   }
 
   function renderWorkplaceSelect() {
@@ -514,7 +544,7 @@
   }
 
   function fillTimeOptions() {
-    for (var minutes = 0; minutes <= 1440; minutes += 30) {
+    for (var minutes = 0; minutes <= 1440; minutes += 5) {
       els.shiftStart.add(new Option(formatTime(minutes), formatTime(minutes)));
       els.shiftEnd.add(new Option(formatTime(minutes), formatTime(minutes)));
     }

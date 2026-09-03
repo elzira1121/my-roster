@@ -533,6 +533,25 @@ input[type="color"] {
   padding: 3px;
 }
 
+.color-presets {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 7px;
+}
+
+.color-preset {
+  width: 100%;
+  aspect-ratio: 1;
+  min-height: 28px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.color-preset.selected {
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--ink);
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
