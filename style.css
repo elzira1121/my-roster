@@ -621,6 +621,14 @@ input[type="color"] {
   font-weight: 700;
 }
 
+.form-message {
+  min-height: 18px;
+  margin: -4px 0 10px;
+  color: #1f7a3f;
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .empty-note {
   margin: 0 0 12px;
   padding: 10px;
@@ -639,11 +647,24 @@ input[type="color"] {
   text-decoration: underline;
 }
 
+.link-btn:disabled {
+  color: var(--muted);
+}
+
 .modal-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
   margin-top: 4px;
+}
+
+#authForm .modal-actions {
+  align-items: center;
+}
+
+#resetPasswordBtn {
+  margin-right: auto;
+  padding-inline: 0;
 }
 
 .workplace-form {

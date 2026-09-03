@@ -89,6 +89,8 @@
     authEmail: document.getElementById("authEmail"),
     authPassword: document.getElementById("authPassword"),
     authError: document.getElementById("authError"),
+    authMessage: document.getElementById("authMessage"),
+    resetPasswordBtn: document.getElementById("resetPasswordBtn"),
     createAccountBtn: document.getElementById("createAccountBtn")
   };
 
@@ -132,6 +134,7 @@
     });
 
     els.signInBtn.addEventListener("click", function () {
+      clearAuthFeedback();
       if (!cloud.enabled) {
         els.authError.textContent = "Add your Firebase config first.";
       }
@@ -141,6 +144,7 @@
     els.signOutBtn.addEventListener("click", signOut);
     els.authForm.addEventListener("submit", signIn);
     els.createAccountBtn.addEventListener("click", createAccount);
+    els.resetPasswordBtn.addEventListener("click", resetPassword);
 
     els.manageWorkplacesBtn.addEventListener("click", function () {
       openWorkplaceModal();
@@ -497,7 +501,7 @@
       return;
     }
 
-    els.authError.textContent = "";
+    clearAuthFeedback();
     window.firebase.auth()
       .signInWithEmailAndPassword(els.authEmail.value.trim(), els.authPassword.value)
       .then(function () {
@@ -515,7 +519,7 @@
       return;
     }
 
-    els.authError.textContent = "";
+    clearAuthFeedback();
     window.firebase.auth()
       .createUserWithEmailAndPassword(els.authEmail.value.trim(), els.authPassword.value)
       .then(function () {
@@ -527,17 +531,53 @@
       });
   }
 
+  function resetPassword() {
+    if (!cloud.enabled) {
+      els.authError.textContent = "Add your Firebase config first.";
+      return;
+    }
+
+    clearAuthFeedback();
+    var email = els.authEmail.value.trim();
+    if (!email) {
+      els.authError.textContent = "Enter your email first, then tap Forgot password.";
+      els.authEmail.focus();
+      return;
+    }
+
+    els.resetPasswordBtn.disabled = true;
+    window.firebase.auth()
+      .sendPasswordResetEmail(email)
+      .then(function () {
+        els.authMessage.textContent = "Password reset email sent. Please check your inbox.";
+      })
+      .catch(function (error) {
+        els.authError.textContent = readableAuthError(error);
+      })
+      .finally(function () {
+        els.resetPasswordBtn.disabled = false;
+      });
+  }
+
   function signOut() {
     if (!cloud.enabled) return;
     window.firebase.auth().signOut();
+  }
+
+  function clearAuthFeedback() {
+    els.authError.textContent = "";
+    els.authMessage.textContent = "";
   }
 
   function readableAuthError(error) {
     if (!error || !error.code) return "Could not sign in.";
     if (error.code === "auth/email-already-in-use") return "That email already has an account.";
     if (error.code === "auth/invalid-email") return "Enter a valid email address.";
-    if (error.code === "auth/invalid-login-credentials" || error.code === "auth/wrong-password") return "Email or password is incorrect.";
+    if (error.code === "auth/invalid-credential" || error.code === "auth/invalid-login-credentials" || error.code === "auth/wrong-password") return "Password is incorrect, or this account does not exist. Please try again or reset your password.";
+    if (error.code === "auth/user-not-found") return "No account found with this email. Please create an account first.";
+    if (error.code === "auth/too-many-requests") return "Too many attempts. Please wait a moment or reset your password.";
     if (error.code === "auth/weak-password") return "Password must be at least 6 characters.";
+    if (error.code === "auth/network-request-failed") return "Network error. Please check your connection and try again.";
     return error.message || "Could not sign in.";
   }
 
