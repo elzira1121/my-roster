@@ -92,6 +92,8 @@ Data remains available after refreshing the page or closing and reopening the br
 
 Because the app uses local browser storage, data is not synced between different browsers or devices.
 
+If another person opens the public website link, they will not see your saved roster. They will get their own separate browser storage. This makes the app useful as a shared tool, but not as a shared live roster database.
+
 ## Project Structure
 
 ```text
@@ -122,15 +124,33 @@ Then open:
 http://localhost:8080/
 ```
 
+## Public Website
+
+After GitHub Pages finishes deploying, the public website is available at:
+
+```text
+https://elzira1121.github.io/my-roster/
+```
+
+You can open this link on a phone, bookmark it, or send it to other people.
+
 ## GitHub Pages
 
 This project is compatible with GitHub Pages because it is a static site.
 
-Recommended GitHub Pages settings:
+The repository includes a GitHub Actions workflow at:
 
-- Source: deploy from branch
-- Branch: the branch you want to publish
-- Folder: `/root`
+```text
+.github/workflows/pages.yml
+```
+
+The workflow deploys the site whenever the `weekly-roster` branch is updated.
+
+If GitHub asks for manual Pages settings, use:
+
+- Source: GitHub Actions
+- Branch: `weekly-roster`
+- Folder: repository root
 
 ## Technical Notes
 
