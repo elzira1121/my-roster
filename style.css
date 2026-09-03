@@ -91,7 +91,7 @@ button {
 
 .actions {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: minmax(92px, 0.7fr) minmax(132px, 1fr) minmax(168px, 1.25fr);
   gap: 6px;
 }
 
@@ -330,11 +330,15 @@ button {
 
 .period-view {
   padding: 10px;
+  min-height: calc(100dvh - 186px);
 }
 
 .month-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: 30px repeat(6, minmax(0, 1fr));
+  height: calc(100dvh - 254px);
+  min-height: 430px;
   border-top: 1px solid var(--line);
   border-left: 1px solid var(--line);
 }
@@ -351,7 +355,7 @@ button {
 }
 
 .month-day {
-  min-height: 92px;
+  min-height: 0;
   padding: 5px 4px;
   border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
@@ -387,9 +391,9 @@ button {
 .mini-shift {
   display: block;
   width: 100%;
-  min-height: 18px;
+  min-height: 16px;
   margin-bottom: 3px;
-  padding: 2px 3px;
+  padding: 2px 4px;
   border: 0;
   border-radius: 3px;
   color: #fff;
@@ -397,7 +401,8 @@ button {
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: left;
-  font-size: 10px;
+  font-size: clamp(8px, 1.4vw, 12px);
+  line-height: 1.15;
   font-weight: 800;
 }
 
@@ -410,8 +415,11 @@ button {
 .year-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 44px 54px;
-  padding: 18px 22px 28px;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: clamp(10px, 2.2vh, 28px) clamp(16px, 3.6vw, 54px);
+  height: calc(100dvh - 254px);
+  min-height: 520px;
+  padding: clamp(8px, 1.5vh, 18px) clamp(10px, 1.8vw, 22px);
 }
 
 .year-month {
@@ -419,9 +427,9 @@ button {
 }
 
 .year-month h3 {
-  margin: 0 0 22px;
+  margin: 0 0 clamp(8px, 1.5vh, 18px);
   color: #ff3b3b;
-  font-size: clamp(22px, 2.8vw, 34px);
+  font-size: clamp(18px, 2.6vw, 34px);
   line-height: 1;
   font-weight: 500;
 }
@@ -430,22 +438,22 @@ button {
 .year-days {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 13px 14px;
+  gap: clamp(3px, 0.85vh, 10px) clamp(3px, 0.9vw, 14px);
   align-items: center;
 }
 
 .year-weekdays {
-  margin-bottom: 22px;
+  margin-bottom: clamp(7px, 1.4vh, 16px);
   color: #858585;
-  font-size: 15px;
+  font-size: clamp(10px, 1.45vw, 15px);
   font-weight: 800;
   text-align: center;
 }
 
 .year-day {
-  width: 24px;
-  height: 24px;
-  min-height: 24px;
+  width: clamp(16px, 2.2vw, 24px);
+  height: clamp(16px, 2.2vw, 24px);
+  min-height: clamp(16px, 2.2vw, 24px);
   justify-self: center;
   padding: 0;
   border: 0;
@@ -453,8 +461,8 @@ button {
   background: transparent;
   color: #303030;
   text-align: center;
-  font-size: 15px;
-  line-height: 24px;
+  font-size: clamp(10px, 1.6vw, 15px);
+  line-height: clamp(16px, 2.2vw, 24px);
   font-weight: 800;
 }
 
@@ -545,7 +553,7 @@ input[type="color"] {
 
 .color-presets {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 7px;
 }
 
@@ -658,7 +666,7 @@ input[type="color"] {
   }
 
   .actions {
-    grid-template-columns: 1fr 1.35fr 1fr;
+    grid-template-columns: 0.7fr 1fr 1.2fr;
     gap: 4px;
   }
 
@@ -697,35 +705,67 @@ input[type="color"] {
   }
 
   .month-day {
-    min-height: 74px;
+    padding: 4px 3px;
+  }
+
+  .month-grid {
+    grid-template-rows: 26px repeat(6, minmax(0, 1fr));
+    height: calc(100dvh - 237px);
+    min-height: 0;
+  }
+
+  .month-weekday {
+    min-height: 26px;
+    font-size: 10px;
+  }
+
+  .month-date {
+    min-width: 19px;
+    min-height: 19px;
+    margin-bottom: 3px;
+    font-size: 11px;
+  }
+
+  .mini-shift {
+    min-height: 14px;
+    margin-bottom: 2px;
+    padding: 1px 2px;
+    font-size: 8px;
   }
 
   .year-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 30px 18px;
-    padding: 14px 8px 24px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(4, minmax(0, 1fr));
+    gap: 10px 10px;
+    height: calc(100dvh - 237px);
+    min-height: 0;
+    padding: 8px 6px;
   }
 
   .year-month h3 {
-    margin-bottom: 16px;
-    font-size: 22px;
+    margin-bottom: 7px;
+    font-size: 13px;
   }
 
   .year-weekdays,
   .year-days {
-    gap: 9px 5px;
+    gap: 2px 1px;
   }
 
   .year-weekdays {
-    margin-bottom: 16px;
-    font-size: 12px;
+    margin-bottom: 6px;
+    font-size: 8px;
   }
 
   .year-day {
-    width: 20px;
-    height: 20px;
-    min-height: 20px;
-    font-size: 12px;
-    line-height: 20px;
+    width: 13px;
+    height: 13px;
+    min-height: 13px;
+    font-size: 8px;
+    line-height: 13px;
+  }
+
+  .color-presets {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }

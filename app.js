@@ -5,7 +5,20 @@
   var dayNames = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
   var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   var majorTimes = [0, 360, 720, 1080, 1440];
-  var presetColors = ["#ed0027", "#ff4fa3", "#111111", "#ff8a00", "#ffd23f", "#22a06b", "#00a3ff", "#5856d6"];
+  var presetColors = [
+    "#f40025",
+    "#ff5a00",
+    "#ff9f00",
+    "#ffd60a",
+    "#a8eb00",
+    "#20c000",
+    "#00b86b",
+    "#12c7b7",
+    "#0a9ff5",
+    "#3155c9",
+    "#8212c9",
+    "#e0008a"
+  ];
   var state = loadState();
   var activeView = "weekly";
   var selectedDate = new Date();
