@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Weekly Roster</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="week-nav" aria-label="Week navigation">
+        <button class="icon-btn" id="previousWeek" type="button" aria-label="Previous Week">‹</button>
+        <div class="week-title" id="weekTitle">This Week</div>
+        <button class="icon-btn" id="nextWeek" type="button" aria-label="Next Week">›</button>
+      </div>
+      <div class="actions">
+        <button class="secondary-btn" id="todayBtn" type="button">Today</button>
+        <button class="secondary-btn" id="manageWorkplacesBtn" type="button">Manage Workplaces</button>
+        <button class="primary-btn" id="addShiftBtn" type="button">Add Shift</button>
+      </div>
+    </header>
+
+    <section class="summary" aria-label="Weekly hours summary">
+      <strong id="totalHours">Total: 0 h</strong>
+      <div id="workplaceSummary" class="workplace-summary"></div>
+    </section>
+
+    <section class="roster" aria-label="Weekly roster">
+      <div class="day-header-row" id="dayHeaderRow"></div>
+      <div class="time-board" id="timeBoard"></div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop hidden" id="shiftModal" role="dialog" aria-modal="true" aria-labelledby="shiftModalTitle">
+    <form class="modal" id="shiftForm">
+      <div class="modal-head">
+        <h2 id="shiftModalTitle">Add Shift</h2>
+        <button class="close-btn" type="button" data-close="shiftModal" aria-label="Close">×</button>
+      </div>
+      <p class="empty-note hidden" id="noWorkplaceNote">
+        Please create a workplace first.
+        <button class="link-btn" id="openWorkplacesFromShift" type="button">Manage Workplaces</button>
+      </p>
+      <input type="hidden" id="shiftId" />
+      <label>
+        Workplace
+        <select id="shiftWorkplace" required></select>
+      </label>
+      <label>
+        Date
+        <input id="shiftDate" type="date" required />
+      </label>
+      <div class="form-grid">
+        <label>
+          Start Time
+          <select id="shiftStart" required></select>
+        </label>
+        <label>
+          End Time
+          <select id="shiftEnd" required></select>
+        </label>
+      </div>
+      <p class="form-error" id="shiftError" role="alert"></p>
+      <div class="modal-actions">
+        <button class="danger-btn hidden" id="deleteShiftBtn" type="button">Delete Shift</button>
+        <button class="secondary-btn" type="button" data-close="shiftModal">Cancel</button>
+        <button class="primary-btn" id="saveShiftBtn" type="submit">Save Shift</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-backdrop hidden" id="workplaceModal" role="dialog" aria-modal="true" aria-labelledby="workplaceModalTitle">
+    <section class="modal">
+      <div class="modal-head">
+        <h2 id="workplaceModalTitle">Manage Workplaces</h2>
+        <button class="close-btn" type="button" data-close="workplaceModal" aria-label="Close">×</button>
+      </div>
+      <form class="workplace-form" id="workplaceForm">
+        <input type="hidden" id="workplaceId" />
+        <label>
+          Workplace Name
+          <input id="workplaceName" type="text" maxlength="40" placeholder="e.g. Your workplace" required />
+        </label>
+        <label>
+          Default Color
+          <input id="workplaceColor" type="color" value="#e60022" />
+        </label>
+        <p class="form-error" id="workplaceError" role="alert"></p>
+        <div class="modal-actions">
+          <button class="secondary-btn" id="cancelWorkplaceEdit" type="button">Clear</button>
+          <button class="primary-btn" type="submit">Save Workplace</button>
+        </div>
+      </form>
+      <div class="workplace-list" id="workplaceList"></div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
