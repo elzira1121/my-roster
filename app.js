@@ -48,7 +48,11 @@
     shiftWorkplace: document.getElementById("shiftWorkplace"),
     shiftDate: document.getElementById("shiftDate"),
     shiftStart: document.getElementById("shiftStart"),
+    shiftStartHour: document.getElementById("shiftStartHour"),
+    shiftStartMinute: document.getElementById("shiftStartMinute"),
     shiftEnd: document.getElementById("shiftEnd"),
+    shiftEndHour: document.getElementById("shiftEndHour"),
+    shiftEndMinute: document.getElementById("shiftEndMinute"),
     shiftError: document.getElementById("shiftError"),
     deleteShiftBtn: document.getElementById("deleteShiftBtn"),
     saveShiftBtn: document.getElementById("saveShiftBtn"),
@@ -62,12 +66,16 @@
     colorPresets: document.getElementById("colorPresets"),
     workplaceError: document.getElementById("workplaceError"),
     workplaceList: document.getElementById("workplaceList"),
-    cancelWorkplaceEdit: document.getElementById("cancelWorkplaceEdit")
+    cancelWorkplaceEdit: document.getElementById("cancelWorkplaceEdit"),
+    previewModal: document.getElementById("previewModal"),
+    previewModalTitle: document.getElementById("previewModalTitle"),
+    previewList: document.getElementById("previewList")
   };
 
   init();
 
   function init() {
+    renderTimeControls();
     renderColorPresets();
     bindEvents();
     render();
@@ -116,6 +124,9 @@
     els.workplaceForm.addEventListener("submit", saveWorkplaceFromForm);
     els.cancelWorkplaceEdit.addEventListener("click", resetWorkplaceForm);
     els.workplaceColor.addEventListener("input", renderColorPresetSelection);
+    [els.shiftStartHour, els.shiftStartMinute, els.shiftEndHour, els.shiftEndMinute].forEach(function (select) {
+      select.addEventListener("change", syncTimeFields);
+    });
 
     document.querySelectorAll("[data-close]").forEach(function (button) {
       button.addEventListener("click", function () {
@@ -301,11 +312,11 @@
         day.classList.add("has-shift");
         day.style.backgroundColor = workplace ? workplace.color : "#7a7f86";
         day.title = shifts.length + " shift" + (shifts.length === 1 ? "" : "s");
-        day.addEventListener("click", function (firstShift) {
+        day.addEventListener("click", function (targetDate) {
           return function () {
-            openShiftModal(firstShift.id);
+            openDayPreview(targetDate);
           };
-        }(shifts[0]));
+        }(dateString));
       }
 
       days.appendChild(day);
@@ -379,13 +390,13 @@
     if (shift) {
       els.shiftWorkplace.value = shift.workplaceId;
       els.shiftDate.value = shift.date;
-      els.shiftStart.value = shift.start;
-      els.shiftEnd.value = shift.end;
+      setTimeControls("shiftStart", shift.start);
+      setTimeControls("shiftEnd", shift.end);
     } else {
       els.shiftWorkplace.value = state.workplaces[0] ? state.workplaces[0].id : "";
       els.shiftDate.value = toISODate(selectedDate);
-      els.shiftStart.value = "09:00";
-      els.shiftEnd.value = "17:00";
+      setTimeControls("shiftStart", "09:00");
+      setTimeControls("shiftEnd", "17:00");
     }
 
     openModal("shiftModal");
@@ -393,6 +404,7 @@
 
   function saveShiftFromForm(event) {
     event.preventDefault();
+    syncTimeFields();
     var id = els.shiftId.value;
     var start = els.shiftStart.value;
     var end = els.shiftEnd.value;
@@ -427,6 +439,88 @@
     closeModal("shiftModal");
     selectedDate = parseISODate(shift.date);
     render();
+  }
+
+  function openDayPreview(dateString) {
+    var date = parseISODate(dateString);
+    var shifts = getShiftsForDate(dateString);
+    els.previewModalTitle.textContent = date.getDate() + " " + date.toLocaleString("en", { month: "short", year: "numeric" });
+    els.previewList.innerHTML = "";
+
+    if (shifts.length === 0) {
+      var empty = document.createElement("p");
+      empty.className = "empty-note";
+      empty.textContent = "No shifts on this day.";
+      els.previewList.appendChild(empty);
+    }
+
+    shifts.forEach(function (shift) {
+      var workplace = getWorkplace(shift.workplaceId);
+      var row = document.createElement("div");
+      row.className = "preview-shift";
+      row.innerHTML =
+        '<span class="preview-color" style="background:' + escapeHTML(workplace ? workplace.color : "#7a7f86") + '"></span>' +
+        '<span class="preview-main">' +
+          '<strong>' + escapeHTML(shift.start + "-" + shift.end) + '</strong>' +
+          '<span>' + escapeHTML(workplace ? workplace.name : "Deleted workplace") + '</span>' +
+        '</span>' +
+        '<span class="preview-hours">' + escapeHTML(formatHours((timeToMinutes(shift.end) - timeToMinutes(shift.start)) / 60)) + ' h</span>';
+      els.previewList.appendChild(row);
+    });
+
+    openModal("previewModal");
+  }
+
+  function renderTimeControls() {
+    fillHourSelect(els.shiftStartHour, 23);
+    fillHourSelect(els.shiftEndHour, 24);
+    fillMinuteSelect(els.shiftStartMinute);
+    fillMinuteSelect(els.shiftEndMinute);
+  }
+
+  function fillHourSelect(select, maxHour) {
+    select.innerHTML = "";
+    for (var hour = 0; hour <= maxHour; hour += 1) {
+      var option = document.createElement("option");
+      option.value = pad(hour);
+      option.textContent = pad(hour);
+      select.appendChild(option);
+    }
+  }
+
+  function fillMinuteSelect(select) {
+    select.innerHTML = "";
+    for (var minute = 0; minute < 60; minute += 5) {
+      var option = document.createElement("option");
+      option.value = pad(minute);
+      option.textContent = pad(minute);
+      select.appendChild(option);
+    }
+  }
+
+  function setTimeControls(prefix, value) {
+    var parts = value.split(":");
+    els[prefix + "Hour"].value = parts[0];
+    els[prefix + "Minute"].value = parts[1];
+    syncTimeFields();
+  }
+
+  function syncTimeFields() {
+    syncTimeField("shiftStart");
+    syncTimeField("shiftEnd");
+  }
+
+  function syncTimeField(prefix) {
+    var hour = els[prefix + "Hour"].value;
+    var minute = els[prefix + "Minute"].value;
+    if (hour === "24") {
+      minute = "00";
+      els[prefix + "Minute"].value = minute;
+      els[prefix + "Minute"].disabled = true;
+    } else {
+      els[prefix + "Minute"].disabled = false;
+    }
+    els[prefix].value = hour + ":" + minute;
   }
 
   function deleteCurrentShift() {

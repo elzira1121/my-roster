@@ -71,11 +71,21 @@
       <div class="form-grid">
         <label>
           Start Time
-          <input id="shiftStart" type="time" step="300" required />
+          <input id="shiftStart" type="hidden" />
+          <div class="time-combo">
+            <select id="shiftStartHour" aria-label="Start hour"></select>
+            <span>:</span>
+            <select id="shiftStartMinute" aria-label="Start minute"></select>
+          </div>
         </label>
         <label>
           End Time
-          <input id="shiftEnd" type="time" step="300" required />
+          <input id="shiftEnd" type="hidden" />
+          <div class="time-combo">
+            <select id="shiftEndHour" aria-label="End hour"></select>
+            <span>:</span>
+            <select id="shiftEndMinute" aria-label="End minute"></select>
+          </div>
         </label>
       </div>
       <p class="form-error" id="shiftError" role="alert"></p>
@@ -111,6 +121,19 @@
         </div>
       </form>
       <div class="workplace-list" id="workplaceList"></div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop hidden" id="previewModal" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle">
+    <section class="modal preview-modal">
+      <div class="modal-head">
+        <h2 id="previewModalTitle">Shift Preview</h2>
+        <button class="close-btn" type="button" data-close="previewModal" aria-label="Close">×</button>
+      </div>
+      <div class="preview-list" id="previewList"></div>
+      <div class="modal-actions">
+        <button class="secondary-btn" type="button" data-close="previewModal">Close</button>
+      </div>
     </section>
   </div>
 
