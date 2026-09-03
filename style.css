@@ -163,6 +163,8 @@ button {
 .weekly-grid {
   display: grid;
   grid-template-columns: var(--time-axis-width) minmax(0, 1fr);
+  border-right: 1px solid #cfcfcf;
+  border-left: 1px solid #cfcfcf;
 }
 
 .time-header {
@@ -244,7 +246,7 @@ button {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   height: var(--board-height);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 2px solid #c5c5c5;
   background: #fff;
 }
 
@@ -252,23 +254,23 @@ button {
   position: relative;
   height: var(--board-height);
   border-right: 1px solid #cfcfcf;
-  background-image: linear-gradient(to bottom, transparent calc(100% - 1px), var(--line) 0);
-  background-size: 100% calc(var(--board-height) / 24);
+  background-image:
+    linear-gradient(to bottom, #c5c5c5 0 2px, transparent 2px),
+    linear-gradient(to bottom, transparent calc(100% - 1px), var(--line) 0);
+  background-size:
+    100% calc(var(--board-height) / 4),
+    100% calc(var(--board-height) / 24);
 }
 
 .time-label {
   position: absolute;
-  right: 6px;
+  right: 8px;
   transform: translateY(4px);
   z-index: 1;
-  min-width: 46px;
-  padding: 2px 4px;
-  border: 1px solid #e1e5ea;
-  border-radius: 4px;
-  background: #fff;
-  color: #aeb4bb;
+  color: #9aa3ad;
   font-size: clamp(10px, 0.95vw, 12px);
   line-height: 1;
+  font-weight: 800;
   pointer-events: none;
   white-space: nowrap;
   text-align: center;
