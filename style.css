@@ -60,7 +60,7 @@ button {
 .week-title {
   min-width: 0;
   text-align: center;
-  font-size: 18px;
+  font-size: clamp(20px, 2.25vw, 28px);
   font-weight: 800;
 }
 
@@ -74,12 +74,12 @@ button {
 }
 
 .view-tab {
-  min-height: 32px;
+  min-height: 40px;
   border: 0;
   border-radius: 5px;
   background: transparent;
   color: var(--muted);
-  font-size: 13px;
+  font-size: clamp(15px, 1.7vw, 20px);
   font-weight: 900;
 }
 
@@ -91,8 +91,8 @@ button {
 
 .actions {
   display: grid;
-  grid-template-columns: minmax(92px, 0.7fr) minmax(132px, 1fr) minmax(168px, 1.25fr);
-  gap: 6px;
+  grid-template-columns: minmax(112px, 1fr) minmax(180px, 1.45fr) minmax(112px, 1fr);
+  gap: 10px;
 }
 
 .icon-btn,
@@ -102,7 +102,7 @@ button {
 .close-btn {
   border: 1px solid var(--line);
   border-radius: 6px;
-  min-height: 36px;
+  min-height: 48px;
   background: #fff;
   color: var(--ink);
   font-weight: 800;
@@ -117,11 +117,11 @@ button {
   border-color: var(--red);
   background: var(--red);
   color: #fff;
-  padding: 0 12px;
+  padding: 0 14px;
 }
 
 .secondary-btn {
-  padding: 0 10px;
+  padding: 0 12px;
 }
 
 .danger-btn {
@@ -141,7 +141,7 @@ button {
   padding: 8px 10px;
   background: #fff;
   border-bottom: 1px solid var(--line);
-  font-size: 13px;
+  font-size: clamp(14px, 1.55vw, 18px);
 }
 
 .workplace-summary {
@@ -215,13 +215,13 @@ button {
 }
 
 .date-num {
-  font-size: clamp(24px, 7.2vw, 46px);
+  font-size: clamp(24px, 5.8vw, 56px);
   line-height: 1;
   font-weight: 900;
 }
 
 .weekday {
-  font-size: clamp(12px, 3.2vw, 25px);
+  font-size: clamp(13px, 3vw, 32px);
   line-height: 1.1;
   font-weight: 900;
 }
@@ -270,7 +270,7 @@ button {
   right: 6px;
   transform: translateY(-50%);
   color: #aeb4bb;
-  font-size: 13px;
+  font-size: clamp(12px, 1.5vw, 18px);
   line-height: 1;
   pointer-events: none;
   white-space: nowrap;
@@ -308,12 +308,12 @@ button {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: clamp(10px, 2.55vw, 15px);
+  font-size: clamp(10px, 1.85vw, 20px);
   font-weight: 800;
 }
 
 .shift-time {
-  font-size: clamp(10px, 2.85vw, 20px);
+  font-size: clamp(10px, 2.2vw, 24px);
   line-height: 1.02;
   font-weight: 500;
 }
@@ -330,27 +330,25 @@ button {
 
 .period-view {
   padding: 10px;
-  min-height: calc(100dvh - 186px);
 }
 
 .month-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   grid-template-rows: 30px repeat(6, minmax(0, 1fr));
-  height: calc(100dvh - 254px);
-  min-height: 430px;
+  min-height: min(650px, calc(100dvh - 254px));
   border-top: 1px solid var(--line);
   border-left: 1px solid var(--line);
 }
 
 .month-weekday {
-  min-height: 30px;
+  min-height: 38px;
   display: grid;
   place-items: center;
   border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   background: #e9e9e9;
-  font-size: 11px;
+  font-size: clamp(12px, 1.35vw, 16px);
   font-weight: 900;
 }
 
@@ -379,7 +377,7 @@ button {
   min-height: 24px;
   margin-bottom: 5px;
   border-radius: 50%;
-  font-size: 13px;
+  font-size: clamp(14px, 1.5vw, 18px);
   font-weight: 900;
 }
 
@@ -391,7 +389,7 @@ button {
 .mini-shift {
   display: block;
   width: 100%;
-  min-height: 16px;
+  min-height: 20px;
   margin-bottom: 3px;
   padding: 2px 4px;
   border: 0;
@@ -401,7 +399,7 @@ button {
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: left;
-  font-size: clamp(8px, 1.4vw, 12px);
+  font-size: clamp(10px, 1.15vw, 13px);
   line-height: 1.15;
   font-weight: 800;
 }
@@ -415,11 +413,8 @@ button {
 .year-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-template-rows: repeat(3, minmax(0, 1fr));
-  gap: clamp(10px, 2.2vh, 28px) clamp(16px, 3.6vw, 54px);
-  height: calc(100dvh - 254px);
-  min-height: 520px;
-  padding: clamp(8px, 1.5vh, 18px) clamp(10px, 1.8vw, 22px);
+  gap: clamp(34px, 5vh, 62px) clamp(42px, 5.5vw, 82px);
+  padding: clamp(20px, 3vh, 34px) clamp(22px, 3vw, 40px) 34px;
 }
 
 .year-month {
@@ -427,9 +422,9 @@ button {
 }
 
 .year-month h3 {
-  margin: 0 0 clamp(8px, 1.5vh, 18px);
+  margin: 0 0 22px;
   color: #ff3b3b;
-  font-size: clamp(18px, 2.6vw, 34px);
+  font-size: clamp(20px, 2.3vw, 34px);
   line-height: 1;
   font-weight: 500;
 }
@@ -438,22 +433,22 @@ button {
 .year-days {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: clamp(3px, 0.85vh, 10px) clamp(3px, 0.9vw, 14px);
+  gap: clamp(8px, 1.05vh, 14px) clamp(8px, 0.9vw, 14px);
   align-items: center;
 }
 
 .year-weekdays {
-  margin-bottom: clamp(7px, 1.4vh, 16px);
+  margin-bottom: 20px;
   color: #858585;
-  font-size: clamp(10px, 1.45vw, 15px);
+  font-size: clamp(12px, 1.2vw, 16px);
   font-weight: 800;
   text-align: center;
 }
 
 .year-day {
-  width: clamp(16px, 2.2vw, 24px);
-  height: clamp(16px, 2.2vw, 24px);
-  min-height: clamp(16px, 2.2vw, 24px);
+  width: clamp(22px, 2vw, 28px);
+  height: clamp(22px, 2vw, 28px);
+  min-height: clamp(22px, 2vw, 28px);
   justify-self: center;
   padding: 0;
   border: 0;
@@ -461,8 +456,8 @@ button {
   background: transparent;
   color: #303030;
   text-align: center;
-  font-size: clamp(10px, 1.6vw, 15px);
-  line-height: clamp(16px, 2.2vw, 24px);
+  font-size: clamp(13px, 1.2vw, 17px);
+  line-height: clamp(22px, 2vw, 28px);
   font-weight: 800;
 }
 
@@ -656,8 +651,8 @@ input[type="color"] {
 
 @media (max-width: 520px) {
   :root {
-    --board-height: calc(100dvh - 245px);
-    --header-height: 76px;
+    --board-height: calc(100dvh - 250px);
+    --header-height: 70px;
     --time-axis-width: 42px;
   }
 
@@ -665,32 +660,45 @@ input[type="color"] {
     padding: 8px 6px 6px;
   }
 
+  .week-title {
+    font-size: 19px;
+  }
+
   .actions {
-    grid-template-columns: 0.7fr 1fr 1.2fr;
-    gap: 4px;
+    grid-template-columns: 1fr 1.35fr 1fr;
+    gap: 5px;
   }
 
   .secondary-btn,
   .primary-btn {
-    min-height: 34px;
-    padding: 0 5px;
+    min-height: 38px;
+    padding: 0 4px;
     font-size: 11px;
+    line-height: 1.05;
   }
 
   .view-tab {
-    min-height: 30px;
-    font-size: 12px;
+    min-height: 34px;
+    font-size: 13px;
   }
 
   .summary {
-    top: 131px;
+    top: 140px;
     align-items: flex-start;
     font-size: 12px;
   }
 
   .time-header,
   .day-header-row {
-    top: 169px;
+    top: 178px;
+  }
+
+  .date-num {
+    font-size: 32px;
+  }
+
+  .weekday {
+    font-size: 17px;
   }
 
   .time-label {
@@ -710,8 +718,7 @@ input[type="color"] {
 
   .month-grid {
     grid-template-rows: 26px repeat(6, minmax(0, 1fr));
-    height: calc(100dvh - 237px);
-    min-height: 0;
+    min-height: min(520px, calc(100dvh - 248px));
   }
 
   .month-weekday {
@@ -734,35 +741,32 @@ input[type="color"] {
   }
 
   .year-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: repeat(4, minmax(0, 1fr));
-    gap: 10px 10px;
-    height: calc(100dvh - 237px);
-    min-height: 0;
-    padding: 8px 6px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 18px;
+    padding: 16px 10px 24px;
   }
 
   .year-month h3 {
-    margin-bottom: 7px;
-    font-size: 13px;
+    margin-bottom: 12px;
+    font-size: 18px;
   }
 
   .year-weekdays,
   .year-days {
-    gap: 2px 1px;
+    gap: 6px 4px;
   }
 
   .year-weekdays {
-    margin-bottom: 6px;
-    font-size: 8px;
+    margin-bottom: 10px;
+    font-size: 10px;
   }
 
   .year-day {
-    width: 13px;
-    height: 13px;
-    min-height: 13px;
-    font-size: 8px;
-    line-height: 13px;
+    width: 18px;
+    height: 18px;
+    min-height: 18px;
+    font-size: 11px;
+    line-height: 18px;
   }
 
   .color-presets {
