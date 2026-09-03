@@ -3,19 +3,28 @@
 
   var STORAGE_KEY = "personalWeeklyRoster.v1";
   var dayNames = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+  var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   var majorTimes = [0, 360, 720, 1080, 1440];
   var state = loadState();
-  var selectedMonday = startOfWeek(new Date());
+  var activeView = "weekly";
+  var selectedDate = new Date();
 
   var els = {
-    weekTitle: document.getElementById("weekTitle"),
-    previousWeek: document.getElementById("previousWeek"),
-    nextWeek: document.getElementById("nextWeek"),
+    periodTitle: document.getElementById("periodTitle"),
+    previousPeriod: document.getElementById("previousPeriod"),
+    nextPeriod: document.getElementById("nextPeriod"),
     todayBtn: document.getElementById("todayBtn"),
     addShiftBtn: document.getElementById("addShiftBtn"),
     manageWorkplacesBtn: document.getElementById("manageWorkplacesBtn"),
+    viewTabs: document.querySelectorAll(".view-tab"),
+    weeklyView: document.getElementById("weeklyView"),
+    monthlyView: document.getElementById("monthlyView"),
+    yearlyView: document.getElementById("yearlyView"),
     dayHeaderRow: document.getElementById("dayHeaderRow"),
+    timeAxis: document.getElementById("timeAxis"),
     timeBoard: document.getElementById("timeBoard"),
+    monthGrid: document.getElementById("monthGrid"),
+    yearGrid: document.getElementById("yearGrid"),
     totalHours: document.getElementById("totalHours"),
     workplaceSummary: document.getElementById("workplaceSummary"),
     shiftModal: document.getElementById("shiftModal"),
@@ -50,19 +59,24 @@
   }
 
   function bindEvents() {
-    els.previousWeek.addEventListener("click", function () {
-      selectedMonday = addDays(selectedMonday, -7);
-      render();
+    els.previousPeriod.addEventListener("click", function () {
+      movePeriod(-1);
     });
 
-    els.nextWeek.addEventListener("click", function () {
-      selectedMonday = addDays(selectedMonday, 7);
-      render();
+    els.nextPeriod.addEventListener("click", function () {
+      movePeriod(1);
     });
 
     els.todayBtn.addEventListener("click", function () {
-      selectedMonday = startOfWeek(new Date());
+      selectedDate = new Date();
       render();
+    });
+
+    els.viewTabs.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        activeView = tab.dataset.view;
+        render();
+      });
     });
 
     els.addShiftBtn.addEventListener("click", function () {
@@ -97,17 +111,50 @@
   }
 
   function render() {
-    renderWeekTitle();
-    renderHeaders();
-    renderBoard();
+    renderViewTabs();
+    renderTitle();
     renderSummary();
     renderWorkplaceSelect();
+    els.weeklyView.classList.toggle("hidden", activeView !== "weekly");
+    els.monthlyView.classList.toggle("hidden", activeView !== "monthly");
+    els.yearlyView.classList.toggle("hidden", activeView !== "yearly");
+
+    if (activeView === "weekly") renderWeekly();
+    if (activeView === "monthly") renderMonthly();
+    if (activeView === "yearly") renderYearly();
   }
 
-  function renderWeekTitle() {
-    var end = addDays(selectedMonday, 6);
-    var text = formatRange(selectedMonday, end);
-    els.weekTitle.textContent = isSameDate(selectedMonday, startOfWeek(new Date())) ? "This Week · " + text : text;
+  function renderViewTabs() {
+    els.viewTabs.forEach(function (tab) {
+      tab.classList.toggle("active", tab.dataset.view === activeView);
+    });
+  }
+
+  function renderTitle() {
+    if (activeView === "weekly") {
+      var monday = startOfWeek(selectedDate);
+      var sunday = addDays(monday, 6);
+      var text = formatRange(monday, sunday);
+      els.periodTitle.textContent = isSameDate(monday, startOfWeek(new Date())) ? "This Week · " + text : text;
+      return;
+    }
+
+    if (activeView === "monthly") {
+      var monthText = selectedDate.toLocaleString("en", { month: "long", year: "numeric" });
+      var today = new Date();
+      var isThisMonth = selectedDate.getFullYear() === today.getFullYear() && selectedDate.getMonth() === today.getMonth();
+      els.periodTitle.textContent = isThisMonth ? "This Month · " + monthText : monthText;
+      return;
+    }
+
+    var year = selectedDate.getFullYear();
+    els.periodTitle.textContent = year === new Date().getFullYear() ? "This Year · " + year : String(year);
+  }
+
+  function renderWeekly() {
+    renderHeaders();
+    renderTimeAxis();
+    renderBoard();
   }
 
   function renderHeaders() {
@@ -123,24 +170,26 @@
     });
   }
 
+  function renderTimeAxis() {
+    els.timeAxis.innerHTML = "";
+    majorTimes.forEach(function (minutes) {
+      var label = document.createElement("div");
+      label.className = "time-label";
+      if (minutes === 0) label.classList.add("top");
+      if (minutes === 1440) label.classList.add("bottom");
+      label.style.top = minutesToPixels(minutes) + "px";
+      label.textContent = formatTime(minutes);
+      els.timeAxis.appendChild(label);
+    });
+  }
+
   function renderBoard() {
-    var weekDates = getWeekDates();
     els.timeBoard.innerHTML = "";
 
-    weekDates.forEach(function (date) {
+    getWeekDates().forEach(function (date) {
       var column = document.createElement("div");
       column.className = "day-column";
       column.dataset.date = toISODate(date);
-
-      majorTimes.forEach(function (minutes) {
-        var label = document.createElement("div");
-        label.className = "time-label";
-        if (minutes === 0) label.classList.add("top");
-        if (minutes === 1440) label.classList.add("bottom");
-        label.style.top = minutesToPixels(minutes) + "px";
-        label.textContent = formatTime(minutes);
-        column.appendChild(label);
-      });
 
       getShiftsForDate(toISODate(date)).forEach(function (shift) {
         column.appendChild(createShiftBlock(shift));
@@ -148,6 +197,74 @@
 
       els.timeBoard.appendChild(column);
     });
+  }
+
+  function renderMonthly() {
+    var monthStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+    var gridStart = startOfWeek(monthStart);
+    els.monthGrid.innerHTML = "";
+
+    dayNames.forEach(function (day) {
+      var weekday = document.createElement("div");
+      weekday.className = "month-weekday";
+      weekday.textContent = day;
+      els.monthGrid.appendChild(weekday);
+    });
+
+    for (var index = 0; index < 42; index += 1) {
+      var date = addDays(gridStart, index);
+      var dateString = toISODate(date);
+      var cell = document.createElement("div");
+      cell.className = "month-day";
+      if (date.getMonth() !== selectedDate.getMonth()) cell.classList.add("outside");
+      cell.innerHTML = '<div class="month-date">' + date.getDate() + '</div>';
+
+      getShiftsForDate(dateString).slice(0, 3).forEach(function (shift) {
+        cell.appendChild(createMiniShift(shift));
+      });
+
+      var hiddenCount = Math.max(getShiftsForDate(dateString).length - 3, 0);
+      if (hiddenCount > 0) {
+        var more = document.createElement("div");
+        more.className = "more-shifts";
+        more.textContent = "+" + hiddenCount + " more";
+        cell.appendChild(more);
+      }
+
+      els.monthGrid.appendChild(cell);
+    }
+  }
+
+  function renderYearly() {
+    els.yearGrid.innerHTML = "";
+    for (var month = 0; month < 12; month += 1) {
+      var range = getMonthRange(selectedDate.getFullYear(), month);
+      var shifts = getShiftsInRange(range.start, range.end);
+      var totals = getTotals(shifts);
+      var card = document.createElement("section");
+      card.className = "month-card";
+      card.innerHTML =
+        '<div class="month-card-head">' +
+          '<span>' + monthNames[month] + '</span>' +
+          '<span class="month-total">' + formatHours(totals.total) + ' h</span>' +
+        '</div>' +
+        '<div class="month-bars"></div>';
+
+      var bars = card.querySelector(".month-bars");
+      var workplaceIds = Object.keys(totals.byWorkplace);
+      if (workplaceIds.length === 0) {
+        var empty = document.createElement("div");
+        empty.className = "more-shifts";
+        empty.textContent = "No shifts";
+        bars.appendChild(empty);
+      } else {
+        workplaceIds.forEach(function (id) {
+          bars.appendChild(createMonthBar(id, totals.byWorkplace[id], totals.total));
+        });
+      }
+
+      els.yearGrid.appendChild(card);
+    }
   }
 
   function createShiftBlock(shift) {
@@ -172,28 +289,46 @@
     return block;
   }
 
-  function renderSummary() {
-    var weekStart = toISODate(selectedMonday);
-    var weekEnd = toISODate(addDays(selectedMonday, 6));
-    var totals = {};
-    var total = 0;
-
-    state.shifts.forEach(function (shift) {
-      if (shift.date < weekStart || shift.date > weekEnd) return;
-      var hours = (timeToMinutes(shift.end) - timeToMinutes(shift.start)) / 60;
-      if (hours <= 0) return;
-      total += hours;
-      totals[shift.workplaceId] = (totals[shift.workplaceId] || 0) + hours;
+  function createMiniShift(shift) {
+    var workplace = getWorkplace(shift.workplaceId);
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "mini-shift";
+    button.style.backgroundColor = workplace ? workplace.color : "#7a7f86";
+    button.textContent = shift.start + " " + (workplace ? workplace.name : "Shift");
+    button.addEventListener("click", function () {
+      openShiftModal(shift.id);
     });
+    return button;
+  }
 
-    els.totalHours.textContent = "Total: " + formatHours(total) + " h";
+  function createMonthBar(id, hours, total) {
+    var workplace = getWorkplace(id);
+    var row = document.createElement("div");
+    var percentage = total > 0 ? Math.max((hours / total) * 100, 4) : 0;
+    row.className = "month-bar-row";
+    row.innerHTML =
+      '<div>' +
+        '<div>' + escapeHTML(workplace ? workplace.name : "Deleted workplace") + '</div>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:' + percentage + '%; background:' + escapeHTML(workplace ? workplace.color : "#7a7f86") + '"></div></div>' +
+      '</div>' +
+      '<span>' + formatHours(hours) + ' h</span>';
+    return row;
+  }
+
+  function renderSummary() {
+    var range = getActiveRange();
+    var shifts = getShiftsInRange(range.start, range.end);
+    var totals = getTotals(shifts);
+    var label = activeView === "weekly" ? "week" : activeView === "monthly" ? "month" : "year";
+    els.totalHours.textContent = "Total hours this " + label + ": " + formatHours(totals.total) + " h";
     els.workplaceSummary.innerHTML = "";
 
-    Object.keys(totals).forEach(function (id) {
+    Object.keys(totals.byWorkplace).forEach(function (id) {
       var workplace = getWorkplace(id);
       var item = document.createElement("span");
       item.className = "summary-item";
-      item.textContent = (workplace ? workplace.name : "Deleted workplace") + " " + formatHours(totals[id]) + " h";
+      item.textContent = (workplace ? workplace.name : "Deleted workplace") + " " + formatHours(totals.byWorkplace[id]) + " h";
       els.workplaceSummary.appendChild(item);
     });
   }
@@ -215,7 +350,7 @@
       els.shiftEnd.value = shift.end;
     } else {
       els.shiftWorkplace.value = state.workplaces[0] ? state.workplaces[0].id : "";
-      els.shiftDate.value = toISODate(new Date());
+      els.shiftDate.value = toISODate(selectedDate);
       els.shiftStart.value = "09:00";
       els.shiftEnd.value = "17:00";
     }
@@ -257,7 +392,7 @@
 
     saveState();
     closeModal("shiftModal");
-    selectedMonday = startOfWeek(parseISODate(shift.date));
+    selectedDate = parseISODate(shift.date);
     render();
   }
 
@@ -376,17 +511,50 @@
 
   function fillTimeOptions() {
     for (var minutes = 0; minutes <= 1440; minutes += 30) {
-      var optionStart = new Option(formatTime(minutes), formatTime(minutes));
-      var optionEnd = new Option(formatTime(minutes), formatTime(minutes));
-      els.shiftStart.add(optionStart);
-      els.shiftEnd.add(optionEnd);
+      els.shiftStart.add(new Option(formatTime(minutes), formatTime(minutes)));
+      els.shiftEnd.add(new Option(formatTime(minutes), formatTime(minutes)));
     }
   }
 
+  function movePeriod(direction) {
+    if (activeView === "weekly") {
+      selectedDate = addDays(selectedDate, direction * 7);
+    } else if (activeView === "monthly") {
+      selectedDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + direction, 1);
+    } else {
+      selectedDate = new Date(selectedDate.getFullYear() + direction, 0, 1);
+    }
+    render();
+  }
+
+  function getActiveRange() {
+    if (activeView === "weekly") {
+      var monday = startOfWeek(selectedDate);
+      return { start: toISODate(monday), end: toISODate(addDays(monday, 6)) };
+    }
+
+    if (activeView === "monthly") {
+      return getMonthRange(selectedDate.getFullYear(), selectedDate.getMonth());
+    }
+
+    return {
+      start: selectedDate.getFullYear() + "-01-01",
+      end: selectedDate.getFullYear() + "-12-31"
+    };
+  }
+
+  function getMonthRange(year, month) {
+    return {
+      start: toISODate(new Date(year, month, 1)),
+      end: toISODate(new Date(year, month + 1, 0))
+    };
+  }
+
   function getWeekDates() {
+    var monday = startOfWeek(selectedDate);
     var dates = [];
     for (var index = 0; index < 7; index += 1) {
-      dates.push(addDays(selectedMonday, index));
+      dates.push(addDays(monday, index));
     }
     return dates;
   }
@@ -395,6 +563,23 @@
     return state.shifts
       .filter(function (shift) { return shift.date === dateString; })
       .sort(function (a, b) { return timeToMinutes(a.start) - timeToMinutes(b.start); });
+  }
+
+  function getShiftsInRange(start, end) {
+    return state.shifts.filter(function (shift) {
+      return shift.date >= start && shift.date <= end;
+    });
+  }
+
+  function getTotals(shifts) {
+    var totals = { total: 0, byWorkplace: {} };
+    shifts.forEach(function (shift) {
+      var hours = (timeToMinutes(shift.end) - timeToMinutes(shift.start)) / 60;
+      if (hours <= 0) return;
+      totals.total += hours;
+      totals.byWorkplace[shift.workplaceId] = (totals.byWorkplace[shift.workplaceId] || 0) + hours;
+    });
+    return totals;
   }
 
   function getWorkplace(id) {

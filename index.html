@@ -10,9 +10,14 @@
   <main class="app-shell">
     <header class="topbar">
       <div class="week-nav" aria-label="Week navigation">
-        <button class="icon-btn" id="previousWeek" type="button" aria-label="Previous Week">‹</button>
-        <div class="week-title" id="weekTitle">This Week</div>
-        <button class="icon-btn" id="nextWeek" type="button" aria-label="Next Week">›</button>
+        <button class="icon-btn" id="previousPeriod" type="button" aria-label="Previous">‹</button>
+        <div class="week-title" id="periodTitle">This Week</div>
+        <button class="icon-btn" id="nextPeriod" type="button" aria-label="Next">›</button>
+      </div>
+      <div class="view-tabs" aria-label="Roster view">
+        <button class="view-tab active" type="button" data-view="weekly">Weekly</button>
+        <button class="view-tab" type="button" data-view="monthly">Monthly</button>
+        <button class="view-tab" type="button" data-view="yearly">Yearly</button>
       </div>
       <div class="actions">
         <button class="secondary-btn" id="todayBtn" type="button">Today</button>
@@ -26,9 +31,21 @@
       <div id="workplaceSummary" class="workplace-summary"></div>
     </section>
 
-    <section class="roster" aria-label="Weekly roster">
-      <div class="day-header-row" id="dayHeaderRow"></div>
-      <div class="time-board" id="timeBoard"></div>
+    <section class="roster weekly-view" id="weeklyView" aria-label="Weekly roster">
+      <div class="weekly-grid">
+        <div class="time-header" aria-hidden="true"></div>
+        <div class="day-header-row" id="dayHeaderRow"></div>
+        <div class="time-axis" id="timeAxis" aria-label="Time axis"></div>
+        <div class="time-board" id="timeBoard"></div>
+      </div>
+    </section>
+
+    <section class="period-view hidden" id="monthlyView" aria-label="Monthly roster">
+      <div class="month-grid" id="monthGrid"></div>
+    </section>
+
+    <section class="period-view hidden" id="yearlyView" aria-label="Yearly roster">
+      <div class="year-grid" id="yearGrid"></div>
     </section>
   </main>
 
