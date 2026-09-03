@@ -209,11 +209,15 @@ button {
 .day-head.today .date-num {
   display: grid;
   place-items: center;
-  min-width: 1.12em;
-  min-height: 1.12em;
+  width: 1.38em;
+  height: 1.38em;
+  min-width: 1.38em;
+  min-height: 1.38em;
   border-radius: 50%;
   background: var(--red);
   color: #fff;
+  font-size: clamp(17px, 1.9vw, 22px);
+  line-height: 1;
 }
 
 .date-num {
