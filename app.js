@@ -75,6 +75,10 @@
       render();
     });
 
+    window.addEventListener("resize", function () {
+      if (activeView === "weekly") renderWeekly();
+    });
+
     els.viewTabs.forEach(function (tab) {
       tab.addEventListener("click", function () {
         activeView = tab.dataset.view;
@@ -157,8 +161,15 @@
 
   function renderWeekly() {
     renderHeaders();
+    fitWeeklyBoard();
     renderTimeAxis();
     renderBoard();
+  }
+
+  function fitWeeklyBoard() {
+    var boardTop = els.weeklyView.getBoundingClientRect().top + getHeaderHeight();
+    var available = Math.max(window.innerHeight - boardTop - 4, 320);
+    document.documentElement.style.setProperty("--board-height", available + "px");
   }
 
   function renderHeaders() {
@@ -166,6 +177,7 @@
     getWeekDates().forEach(function (date, index) {
       var head = document.createElement("div");
       head.className = "day-head";
+      if (isSameDate(date, new Date())) head.classList.add("today");
       head.innerHTML =
         '<div class="date-num">' + pad(date.getDate()) + '</div>' +
         '<div class="weekday">' + dayNames[index] + '</div>' +
@@ -221,6 +233,7 @@
       var cell = document.createElement("div");
       cell.className = "month-day";
       if (date.getMonth() !== selectedDate.getMonth()) cell.classList.add("outside");
+      if (isSameDate(date, new Date())) cell.classList.add("today");
       cell.innerHTML = '<div class="month-date">' + date.getDate() + '</div>';
 
       getShiftsForDate(dateString).slice(0, 3).forEach(function (shift) {
@@ -317,7 +330,7 @@
     button.type = "button";
     button.className = "mini-shift";
     button.style.backgroundColor = workplace ? workplace.color : "#7a7f86";
-    button.textContent = shift.start + " " + (workplace ? workplace.name : "Shift");
+    button.textContent = shift.start + "-" + shift.end + " " + (workplace ? workplace.name : "Shift");
     button.addEventListener("click", function () {
       openShiftModal(shift.id);
     });
@@ -631,8 +644,14 @@
   }
 
   function minutesToPixels(minutes) {
-    var boardHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--board-height"));
+    var board = els.timeBoard || document.querySelector(".time-board");
+    var boardHeight = board ? board.getBoundingClientRect().height : 0;
+    if (!boardHeight) boardHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--board-height"));
     return (minutes / 1440) * boardHeight;
+  }
+
+  function getHeaderHeight() {
+    return parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-height")) || 86;
   }
 
   function timeToMinutes(value) {
