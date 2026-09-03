@@ -22,6 +22,17 @@
   var state = loadState();
   var activeView = "weekly";
   var selectedDate = new Date();
+  var cloud = {
+    enabled: false,
+    ready: false,
+    user: null,
+    db: null,
+    docRef: null,
+    unsubscribe: null,
+    isApplyingRemote: false,
+    saveTimer: null,
+    status: "Local only"
+  };
 
   var els = {
     periodTitle: document.getElementById("periodTitle"),
@@ -30,6 +41,9 @@
     todayBtn: document.getElementById("todayBtn"),
     addShiftBtn: document.getElementById("addShiftBtn"),
     manageWorkplacesBtn: document.getElementById("manageWorkplacesBtn"),
+    syncStatus: document.getElementById("syncStatus"),
+    signInBtn: document.getElementById("signInBtn"),
+    signOutBtn: document.getElementById("signOutBtn"),
     viewTabs: document.querySelectorAll(".view-tab"),
     weeklyView: document.getElementById("weeklyView"),
     monthlyView: document.getElementById("monthlyView"),
@@ -69,7 +83,13 @@
     cancelWorkplaceEdit: document.getElementById("cancelWorkplaceEdit"),
     previewModal: document.getElementById("previewModal"),
     previewModalTitle: document.getElementById("previewModalTitle"),
-    previewList: document.getElementById("previewList")
+    previewList: document.getElementById("previewList"),
+    authModal: document.getElementById("authModal"),
+    authForm: document.getElementById("authForm"),
+    authEmail: document.getElementById("authEmail"),
+    authPassword: document.getElementById("authPassword"),
+    authError: document.getElementById("authError"),
+    createAccountBtn: document.getElementById("createAccountBtn")
   };
 
   init();
@@ -78,6 +98,7 @@
     renderTimeControls();
     renderColorPresets();
     bindEvents();
+    initFirebase();
     render();
   }
 
@@ -109,6 +130,17 @@
     els.addShiftBtn.addEventListener("click", function () {
       openShiftModal();
     });
+
+    els.signInBtn.addEventListener("click", function () {
+      if (!cloud.enabled) {
+        els.authError.textContent = "Add your Firebase config first.";
+      }
+      openModal("authModal");
+    });
+
+    els.signOutBtn.addEventListener("click", signOut);
+    els.authForm.addEventListener("submit", signIn);
+    els.createAccountBtn.addEventListener("click", createAccount);
 
     els.manageWorkplacesBtn.addEventListener("click", function () {
       openWorkplaceModal();
@@ -145,6 +177,7 @@
     renderViewTabs();
     renderTitle();
     renderSummary();
+    renderSyncUI();
     renderWorkplaceSelect();
     els.weeklyView.classList.toggle("hidden", activeView !== "weekly");
     els.monthlyView.classList.toggle("hidden", activeView !== "monthly");
@@ -381,6 +414,131 @@
       item.textContent = (workplace ? workplace.name : "Deleted workplace") + " " + formatHours(totals.byWorkplace[id]) + " h";
       els.workplaceSummary.appendChild(item);
     });
+  }
+
+  function renderSyncUI() {
+    els.syncStatus.textContent = cloud.status;
+    els.signInBtn.classList.toggle("hidden", !!cloud.user);
+    els.signOutBtn.classList.toggle("hidden", !cloud.user);
+  }
+
+  function initFirebase() {
+    var config = window.MY_ROSTER_FIREBASE_CONFIG;
+    if (!isFirebaseConfigured(config) || !window.firebase) {
+      cloud.status = "Local only";
+      renderSyncUI();
+      return;
+    }
+
+    try {
+      window.firebase.initializeApp(config);
+      cloud.enabled = true;
+      cloud.db = window.firebase.firestore();
+      cloud.status = "Not signed in";
+      window.firebase.auth().onAuthStateChanged(handleAuthChange);
+    } catch (error) {
+      cloud.status = "Firebase setup error";
+      renderSyncUI();
+    }
+  }
+
+  function isFirebaseConfigured(config) {
+    return !!(
+      config &&
+      config.apiKey &&
+      config.authDomain &&
+      config.projectId &&
+      config.appId
+    );
+  }
+
+  function handleAuthChange(user) {
+    cloud.user = user || null;
+
+    if (cloud.unsubscribe) {
+      cloud.unsubscribe();
+      cloud.unsubscribe = null;
+    }
+
+    if (!user) {
+      cloud.docRef = null;
+      cloud.status = cloud.enabled ? "Not signed in" : "Local only";
+      renderSyncUI();
+      return;
+    }
+
+    cloud.status = "Syncing...";
+    renderSyncUI();
+    cloud.docRef = cloud.db.collection("users").doc(user.uid).collection("rosters").doc("default");
+    cloud.unsubscribe = cloud.docRef.onSnapshot(function (snapshot) {
+      if (snapshot.exists) {
+        var data = snapshot.data();
+        if (Array.isArray(data.workplaces) && Array.isArray(data.shifts)) {
+          cloud.isApplyingRemote = true;
+          state = { workplaces: data.workplaces, shifts: data.shifts };
+          saveLocalState();
+          cloud.isApplyingRemote = false;
+          cloud.status = "Synced";
+          render();
+        }
+      } else {
+        saveCloudStateNow();
+      }
+    }, function () {
+      cloud.status = "Sync error";
+      renderSyncUI();
+    });
+  }
+
+  function signIn(event) {
+    event.preventDefault();
+    if (!cloud.enabled) {
+      els.authError.textContent = "Add your Firebase config first.";
+      return;
+    }
+
+    els.authError.textContent = "";
+    window.firebase.auth()
+      .signInWithEmailAndPassword(els.authEmail.value.trim(), els.authPassword.value)
+      .then(function () {
+        closeModal("authModal");
+        els.authForm.reset();
+      })
+      .catch(function (error) {
+        els.authError.textContent = readableAuthError(error);
+      });
+  }
+
+  function createAccount() {
+    if (!cloud.enabled) {
+      els.authError.textContent = "Add your Firebase config first.";
+      return;
+    }
+
+    els.authError.textContent = "";
+    window.firebase.auth()
+      .createUserWithEmailAndPassword(els.authEmail.value.trim(), els.authPassword.value)
+      .then(function () {
+        closeModal("authModal");
+        els.authForm.reset();
+      })
+      .catch(function (error) {
+        els.authError.textContent = readableAuthError(error);
+      });
+  }
+
+  function signOut() {
+    if (!cloud.enabled) return;
+    window.firebase.auth().signOut();
+  }
+
+  function readableAuthError(error) {
+    if (!error || !error.code) return "Could not sign in.";
+    if (error.code === "auth/email-already-in-use") return "That email already has an account.";
+    if (error.code === "auth/invalid-email") return "Enter a valid email address.";
+    if (error.code === "auth/invalid-login-credentials" || error.code === "auth/wrong-password") return "Email or password is incorrect.";
+    if (error.code === "auth/weak-password") return "Password must be at least 6 characters.";
+    return error.message || "Could not sign in.";
   }
 
   function openShiftModal(shiftId) {
@@ -831,7 +989,35 @@
   }
 
   function saveState() {
+    saveLocalState();
+    scheduleCloudSave();
+  }
+
+  function saveLocalState() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function scheduleCloudSave() {
+    if (!cloud.docRef || cloud.isApplyingRemote) return;
+    clearTimeout(cloud.saveTimer);
+    cloud.status = "Saving...";
+    renderSyncUI();
+    cloud.saveTimer = setTimeout(saveCloudStateNow, 250);
+  }
+
+  function saveCloudStateNow() {
+    if (!cloud.docRef) return;
+    cloud.docRef.set({
+      workplaces: state.workplaces,
+      shifts: state.shifts,
+      updatedAt: window.firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true }).then(function () {
+      cloud.status = "Synced";
+      renderSyncUI();
+    }).catch(function () {
+      cloud.status = "Sync error";
+      renderSyncUI();
+    });
   }
 
   function escapeHTML(value) {

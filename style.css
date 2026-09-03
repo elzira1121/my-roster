@@ -95,6 +95,22 @@ button {
   gap: 8px;
 }
 
+.sync-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.sync-panel .secondary-btn {
+  min-height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
 .icon-btn,
 .primary-btn,
 .secondary-btn,
@@ -733,6 +749,18 @@ input[type="color"] {
   .actions {
     grid-template-columns: 1fr 1.35fr 1fr;
     gap: 5px;
+  }
+
+  .sync-panel {
+    grid-template-columns: 1fr auto;
+    gap: 5px;
+    font-size: 10px;
+  }
+
+  .sync-panel .secondary-btn {
+    min-height: 28px;
+    padding: 0 6px;
+    font-size: 10px;
   }
 
   .secondary-btn,

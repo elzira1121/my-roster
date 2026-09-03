@@ -24,6 +24,11 @@
         <button class="primary-btn" id="addShiftBtn" type="button">Add Shift</button>
         <button class="secondary-btn" id="manageWorkplacesBtn" type="button">Manage Workplaces</button>
       </div>
+      <div class="sync-panel">
+        <span id="syncStatus">Local only</span>
+        <button class="secondary-btn" id="signInBtn" type="button">Sign in to sync</button>
+        <button class="secondary-btn hidden" id="signOutBtn" type="button">Sign out</button>
+      </div>
     </header>
 
     <section class="summary" aria-label="Weekly hours summary">
@@ -137,6 +142,35 @@
     </section>
   </div>
 
+  <div class="modal-backdrop hidden" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+    <form class="modal" id="authForm">
+      <div class="modal-head">
+        <h2 id="authModalTitle">Sync With Firebase</h2>
+        <button class="close-btn" type="button" data-close="authModal" aria-label="Close">×</button>
+      </div>
+      <label>
+        Email
+        <input id="authEmail" type="email" autocomplete="email" required />
+      </label>
+      <label>
+        Password
+        <input id="authPassword" type="password" autocomplete="current-password" minlength="6" required />
+      </label>
+      <p class="empty-note">
+        Sign in to save your roster in Firebase. Use Create Account the first time.
+      </p>
+      <p class="form-error" id="authError" role="alert"></p>
+      <div class="modal-actions">
+        <button class="secondary-btn" id="createAccountBtn" type="button">Create Account</button>
+        <button class="primary-btn" type="submit">Sign In</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

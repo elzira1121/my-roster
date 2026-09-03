@@ -20,6 +20,7 @@ The app runs entirely in the browser with HTML, CSS, and vanilla JavaScript. The
 - Weekly, monthly, and yearly hour totals
 - Workplace-level hour breakdowns
 - Persistent browser storage with `localStorage`
+- Optional Firebase sync with email/password sign-in
 - Works by opening `index.html` directly
 - Compatible with GitHub Pages
 
@@ -90,9 +91,76 @@ The app saves:
 
 Data remains available after refreshing the page or closing and reopening the browser on the same device and browser profile.
 
-Because the app uses local browser storage, data is not synced between different browsers or devices.
+Without Firebase sign-in, data is not synced between different browsers or devices.
 
 If another person opens the public website link, they will not see your saved roster. They will get their own separate browser storage. This makes the app useful as a shared tool, but not as a shared live roster database.
+
+With Firebase enabled and signed in, roster data is stored in Firestore at:
+
+```text
+users/{userId}/rosters/default
+```
+
+Each signed-in user has their own private document.
+
+## Firebase Sync
+
+Firebase is optional. The app still works locally if Firebase is not configured.
+
+To enable cloud sync:
+
+1. Create a Firebase project at:
+
+```text
+https://console.firebase.google.com/
+```
+
+2. Add a Web app in Firebase Project Settings.
+
+3. Copy the Firebase config into:
+
+```text
+firebase-config.js
+```
+
+It should look like this:
+
+```js
+window.MY_ROSTER_FIREBASE_CONFIG = {
+  apiKey: "your-api-key",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "your-sender-id",
+  appId: "your-app-id"
+};
+```
+
+4. In Firebase Authentication, enable **Email/Password** sign-in.
+
+5. In Firestore Database, create a database.
+
+6. Use these Firestore security rules:
+
+```js
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/rosters/{rosterId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+```
+
+7. Add your hosted domain to Firebase Authentication authorized domains:
+
+```text
+elzira1121.github.io
+```
+
+After this, open the app and use **Sign in to sync**.
 
 ## Project Structure
 
