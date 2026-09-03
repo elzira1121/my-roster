@@ -258,9 +258,14 @@
       if (date.getMonth() !== selectedDate.getMonth()) cell.classList.add("outside");
       if (isSameDate(date, new Date())) cell.classList.add("today");
       cell.innerHTML = '<div class="month-date">' + date.getDate() + '</div>';
+      cell.addEventListener("click", function (targetDate) {
+        return function () {
+          openDayPreview(targetDate);
+        };
+      }(dateString));
 
       getShiftsForDate(dateString).slice(0, 3).forEach(function (shift) {
-        cell.appendChild(createMiniShift(shift));
+        cell.appendChild(createMiniShift(shift, dateString));
       });
 
       var hiddenCount = Math.max(getShiftsForDate(dateString).length - 3, 0);
@@ -347,15 +352,16 @@
     return block;
   }
 
-  function createMiniShift(shift) {
+  function createMiniShift(shift, dateString) {
     var workplace = getWorkplace(shift.workplaceId);
     var button = document.createElement("button");
     button.type = "button";
     button.className = "mini-shift";
     button.style.backgroundColor = workplace ? workplace.color : "#7a7f86";
     button.textContent = shift.start + "-" + shift.end + " " + (workplace ? workplace.name : "Shift");
-    button.addEventListener("click", function () {
-      openShiftModal(shift.id);
+    button.addEventListener("click", function (event) {
+      event.stopPropagation();
+      openDayPreview(dateString);
     });
     return button;
   }
