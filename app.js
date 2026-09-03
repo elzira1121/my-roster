@@ -3,7 +3,7 @@
 
   var STORAGE_KEY = "personalWeeklyRoster.v1";
   var dayNames = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
-  var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   var majorTimes = [0, 360, 720, 1080, 1440];
   var state = loadState();
   var activeView = "weekly";
@@ -238,33 +238,51 @@
   function renderYearly() {
     els.yearGrid.innerHTML = "";
     for (var month = 0; month < 12; month += 1) {
-      var range = getMonthRange(selectedDate.getFullYear(), month);
-      var shifts = getShiftsInRange(range.start, range.end);
-      var totals = getTotals(shifts);
-      var card = document.createElement("section");
-      card.className = "month-card";
-      card.innerHTML =
-        '<div class="month-card-head">' +
-          '<span>' + monthNames[month] + '</span>' +
-          '<span class="month-total">' + formatHours(totals.total) + ' h</span>' +
-        '</div>' +
-        '<div class="month-bars"></div>';
+      els.yearGrid.appendChild(createYearMonth(month));
+    }
+  }
 
-      var bars = card.querySelector(".month-bars");
-      var workplaceIds = Object.keys(totals.byWorkplace);
-      if (workplaceIds.length === 0) {
-        var empty = document.createElement("div");
-        empty.className = "more-shifts";
-        empty.textContent = "No shifts";
-        bars.appendChild(empty);
-      } else {
-        workplaceIds.forEach(function (id) {
-          bars.appendChild(createMonthBar(id, totals.byWorkplace[id], totals.total));
-        });
+  function createYearMonth(month) {
+    var year = selectedDate.getFullYear();
+    var monthStart = new Date(year, month, 1);
+    var gridStart = startOfWeek(monthStart);
+    var wrap = document.createElement("section");
+    wrap.className = "year-month";
+    wrap.innerHTML =
+      '<h3>' + monthNames[month] + '</h3>' +
+      '<div class="year-weekdays">' +
+        '<span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>' +
+      '</div>' +
+      '<div class="year-days"></div>';
+
+    var days = wrap.querySelector(".year-days");
+    for (var index = 0; index < 42; index += 1) {
+      var date = addDays(gridStart, index);
+      var dateString = toISODate(date);
+      var shifts = getShiftsForDate(dateString);
+      var day = document.createElement("button");
+      day.type = "button";
+      day.className = "year-day";
+      if (date.getMonth() !== month) day.classList.add("outside");
+      if (isSameDate(date, new Date())) day.classList.add("today");
+      day.textContent = date.getDate();
+
+      if (shifts.length > 0) {
+        var workplace = getWorkplace(shifts[0].workplaceId);
+        day.classList.add("has-shift");
+        day.style.backgroundColor = workplace ? workplace.color : "#7a7f86";
+        day.title = shifts.length + " shift" + (shifts.length === 1 ? "" : "s");
+        day.addEventListener("click", function (firstShift) {
+          return function () {
+            openShiftModal(firstShift.id);
+          };
+        }(shifts[0]));
       }
 
-      els.yearGrid.appendChild(card);
+      days.appendChild(day);
     }
+
+    return wrap;
   }
 
   function createShiftBlock(shift) {
@@ -300,20 +318,6 @@
       openShiftModal(shift.id);
     });
     return button;
-  }
-
-  function createMonthBar(id, hours, total) {
-    var workplace = getWorkplace(id);
-    var row = document.createElement("div");
-    var percentage = total > 0 ? Math.max((hours / total) * 100, 4) : 0;
-    row.className = "month-bar-row";
-    row.innerHTML =
-      '<div>' +
-        '<div>' + escapeHTML(workplace ? workplace.name : "Deleted workplace") + '</div>' +
-        '<div class="bar-track"><div class="bar-fill" style="width:' + percentage + '%; background:' + escapeHTML(workplace ? workplace.color : "#7a7f86") + '"></div></div>' +
-      '</div>' +
-      '<span>' + formatHours(hours) + ' h</span>';
-    return row;
   }
 
   function renderSummary() {
