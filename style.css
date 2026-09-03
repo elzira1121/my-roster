@@ -5,9 +5,9 @@
   --line: #d7d7d7;
   --soft-line: #eeeeee;
   --bg: #ffffff;
-  --board-height: calc(100dvh - 263px);
-  --header-height: 86px;
-  --time-axis-width: 52px;
+  --board-height: calc(100dvh - 224px);
+  --header-height: 58px;
+  --time-axis-width: 58px;
 }
 
 * {
@@ -44,15 +44,15 @@ button {
   top: 0;
   z-index: 30;
   display: grid;
-  gap: 8px;
-  padding: 10px 10px 8px;
+  gap: 6px;
+  padding: 8px 10px 7px;
   background: #fff;
   border-bottom: 1px solid var(--line);
 }
 
 .week-nav {
   display: grid;
-  grid-template-columns: 36px 1fr 36px;
+  grid-template-columns: 32px 1fr 32px;
   align-items: center;
   gap: 6px;
 }
@@ -60,7 +60,7 @@ button {
 .week-title {
   min-width: 0;
   text-align: center;
-  font-size: clamp(20px, 2.25vw, 28px);
+  font-size: clamp(16px, 1.65vw, 22px);
   font-weight: 800;
 }
 
@@ -74,12 +74,12 @@ button {
 }
 
 .view-tab {
-  min-height: 40px;
+  min-height: 32px;
   border: 0;
   border-radius: 5px;
   background: transparent;
   color: var(--muted);
-  font-size: clamp(15px, 1.7vw, 20px);
+  font-size: clamp(12px, 1.15vw, 15px);
   font-weight: 900;
 }
 
@@ -91,8 +91,8 @@ button {
 
 .actions {
   display: grid;
-  grid-template-columns: minmax(112px, 1fr) minmax(180px, 1.45fr) minmax(112px, 1fr);
-  gap: 10px;
+  grid-template-columns: minmax(112px, 1fr) minmax(160px, 1.38fr) minmax(112px, 1fr);
+  gap: 8px;
 }
 
 .icon-btn,
@@ -102,14 +102,14 @@ button {
 .close-btn {
   border: 1px solid var(--line);
   border-radius: 6px;
-  min-height: 48px;
+  min-height: 36px;
   background: #fff;
   color: var(--ink);
   font-weight: 800;
 }
 
 .icon-btn {
-  font-size: 30px;
+  font-size: 24px;
   line-height: 1;
 }
 
@@ -132,16 +132,16 @@ button {
 
 .summary {
   position: sticky;
-  top: 139px;
+  top: 114px;
   z-index: 24;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 8px 10px;
+  padding: 7px 10px;
   background: #fff;
   border-bottom: 1px solid var(--line);
-  font-size: clamp(14px, 1.55vw, 18px);
+  font-size: clamp(12px, 1.15vw, 15px);
 }
 
 .workplace-summary {
@@ -167,7 +167,7 @@ button {
 
 .time-header {
   position: sticky;
-  top: 177px;
+  top: 146px;
   z-index: 18;
   height: var(--header-height);
   border-right: 1px solid #c9c9c9;
@@ -177,7 +177,7 @@ button {
 
 .day-header-row {
   position: sticky;
-  top: 177px;
+  top: 146px;
   z-index: 18;
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -215,20 +215,20 @@ button {
 }
 
 .date-num {
-  font-size: clamp(24px, 5.8vw, 56px);
+  font-size: clamp(22px, 3.45vw, 38px);
   line-height: 1;
   font-weight: 900;
 }
 
 .weekday {
-  font-size: clamp(13px, 3vw, 32px);
+  font-size: clamp(11px, 1.8vw, 20px);
   line-height: 1.1;
   font-weight: 900;
 }
 
 .chevron {
   color: var(--red);
-  font-size: 20px;
+  font-size: 15px;
   line-height: 1;
   font-weight: 900;
 }
@@ -267,21 +267,28 @@ button {
 
 .time-label {
   position: absolute;
-  right: 6px;
+  right: 5px;
   transform: translateY(-50%);
+  z-index: 1;
+  min-width: 46px;
+  padding: 2px 4px;
+  border: 1px solid #e1e5ea;
+  border-radius: 4px;
+  background: #fff;
   color: #aeb4bb;
-  font-size: clamp(12px, 1.5vw, 18px);
+  font-size: clamp(10px, 0.95vw, 12px);
   line-height: 1;
   pointer-events: none;
   white-space: nowrap;
+  text-align: center;
 }
 
 .time-label.top {
-  transform: translateY(10px);
+  transform: translateY(8px);
 }
 
 .time-label.bottom {
-  transform: translateY(-18px);
+  transform: translateY(-24px);
 }
 
 .shift-block {
@@ -308,12 +315,12 @@ button {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: clamp(10px, 1.85vw, 20px);
+  font-size: clamp(9px, 1.15vw, 14px);
   font-weight: 800;
 }
 
 .shift-time {
-  font-size: clamp(10px, 2.2vw, 24px);
+  font-size: clamp(10px, 1.35vw, 16px);
   line-height: 1.02;
   font-weight: 500;
 }
@@ -542,6 +549,13 @@ select {
   color: var(--ink);
 }
 
+input[type="time"] {
+  min-height: 48px;
+  font-size: 18px;
+  font-weight: 800;
+  text-align: center;
+}
+
 input[type="color"] {
   padding: 3px;
 }
@@ -651,9 +665,9 @@ input[type="color"] {
 
 @media (max-width: 520px) {
   :root {
-    --board-height: calc(100dvh - 250px);
-    --header-height: 70px;
-    --time-axis-width: 42px;
+    --board-height: calc(100dvh - 222px);
+    --header-height: 54px;
+    --time-axis-width: 44px;
   }
 
   .topbar {
@@ -661,7 +675,7 @@ input[type="color"] {
   }
 
   .week-title {
-    font-size: 19px;
+    font-size: 16px;
   }
 
   .actions {
@@ -671,39 +685,41 @@ input[type="color"] {
 
   .secondary-btn,
   .primary-btn {
-    min-height: 38px;
+    min-height: 34px;
     padding: 0 4px;
-    font-size: 11px;
+    font-size: 10px;
     line-height: 1.05;
   }
 
   .view-tab {
-    min-height: 34px;
-    font-size: 13px;
+    min-height: 30px;
+    font-size: 12px;
   }
 
   .summary {
-    top: 140px;
+    top: 118px;
     align-items: flex-start;
     font-size: 12px;
   }
 
   .time-header,
   .day-header-row {
-    top: 178px;
+    top: 154px;
   }
 
   .date-num {
-    font-size: 32px;
+    font-size: 24px;
   }
 
   .weekday {
-    font-size: 17px;
+    font-size: 12px;
   }
 
   .time-label {
-    right: 4px;
-    font-size: 11px;
+    right: 3px;
+    min-width: 38px;
+    padding: 2px;
+    font-size: 9px;
   }
 
   .shift-block {

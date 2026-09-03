@@ -68,7 +68,6 @@
   init();
 
   function init() {
-    fillTimeOptions();
     renderColorPresets();
     bindEvents();
     render();
@@ -567,13 +566,6 @@
       option.textContent = workplace.name;
       els.shiftWorkplace.appendChild(option);
     });
-  }
-
-  function fillTimeOptions() {
-    for (var minutes = 0; minutes <= 1440; minutes += 5) {
-      els.shiftStart.add(new Option(formatTime(minutes), formatTime(minutes)));
-      els.shiftEnd.add(new Option(formatTime(minutes), formatTime(minutes)));
-    }
   }
 
   function movePeriod(direction) {
