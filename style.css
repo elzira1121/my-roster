@@ -259,8 +259,8 @@ button {
 
 .time-label {
   position: absolute;
-  right: 5px;
-  transform: translateY(-50%);
+  right: 6px;
+  transform: translateY(4px);
   z-index: 1;
   min-width: 46px;
   padding: 2px 4px;
@@ -276,11 +276,11 @@ button {
 }
 
 .time-label.top {
-  transform: translateY(8px);
+  transform: translateY(4px);
 }
 
 .time-label.bottom {
-  transform: translateY(-24px);
+  transform: translateY(-100%);
 }
 
 .shift-block {
@@ -291,13 +291,13 @@ button {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   gap: 2px;
   padding: 5px 6px;
   border: 0;
   border-radius: 0;
   color: #fff;
-  text-align: left;
+  text-align: center;
   overflow: hidden;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
