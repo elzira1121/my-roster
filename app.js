@@ -136,7 +136,7 @@
     els.signInBtn.addEventListener("click", function () {
       clearAuthFeedback();
       if (!cloud.enabled) {
-        els.authError.textContent = "Add your Firebase config first.";
+        els.authError.textContent = "Online sync is not ready yet. Please try again later.";
       }
       openModal("authModal");
     });
@@ -441,7 +441,7 @@
       cloud.status = "Not signed in";
       window.firebase.auth().onAuthStateChanged(handleAuthChange);
     } catch (error) {
-      cloud.status = "Firebase setup error";
+      cloud.status = "Sync setup error";
       renderSyncUI();
     }
   }
@@ -497,7 +497,7 @@
   function signIn(event) {
     event.preventDefault();
     if (!cloud.enabled) {
-      els.authError.textContent = "Add your Firebase config first.";
+      els.authError.textContent = "Online sync is not ready yet. Please try again later.";
       return;
     }
 
@@ -515,7 +515,7 @@
 
   function createAccount() {
     if (!cloud.enabled) {
-      els.authError.textContent = "Add your Firebase config first.";
+      els.authError.textContent = "Online sync is not ready yet. Please try again later.";
       return;
     }
 
@@ -533,7 +533,7 @@
 
   function resetPassword() {
     if (!cloud.enabled) {
-      els.authError.textContent = "Add your Firebase config first.";
+      els.authError.textContent = "Online sync is not ready yet. Please try again later.";
       return;
     }
 
