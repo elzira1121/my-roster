@@ -68,8 +68,8 @@ In **Manage Workplaces**, users can:
 - Change the default color later
 - Set a base hourly rate
 - Set weekday, Saturday, Sunday, and public holiday pay multipliers
-- Set early morning and evening multipliers for weekday and Saturday shifts
-- Set before-09:00 and after-09:00 multipliers for Sunday shifts
+- Set custom early morning and evening time boundaries for weekday and Saturday shifts
+- Set a custom Sunday split time for different Sunday multipliers
 
 When adding a shift, the workplace dropdown is populated from the user's saved workplaces.
 
@@ -108,11 +108,11 @@ shift segment hours × workplace base hourly rate × matching penalty multiplier
 
 Public holidays are entered manually for now. If a shift date is in the public holiday list, the public holiday multiplier is used before weekday, Saturday, or Sunday rates.
 
-For non-public-holiday shifts, the calculator splits each shift by time:
+For non-public-holiday shifts, the calculator splits each shift by the workplace's saved time boundaries:
 
-- Weekdays: before `06:00`, `06:00-18:00`, and after `18:00`
-- Saturdays: before `06:00`, `06:00-18:00`, and after `18:00`
-- Sundays: before `09:00` and after `09:00`
+- Weekdays: before the custom early time, base period, and after the custom evening time
+- Saturdays: before the custom early time, base period, and after the custom evening time
+- Sundays: before and after the custom Sunday split time
 
 ## Data Storage
 

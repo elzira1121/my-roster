@@ -93,11 +93,16 @@
     workplaceColor: document.getElementById("workplaceColor"),
     workplaceBaseRate: document.getElementById("workplaceBaseRate"),
     weekdayBaseRate: document.getElementById("weekdayBaseRate"),
+    weekdayEarlyEnd: document.getElementById("weekdayEarlyEnd"),
     weekdayEarlyRate: document.getElementById("weekdayEarlyRate"),
+    weekdayEveningStart: document.getElementById("weekdayEveningStart"),
     weekdayEveningRate: document.getElementById("weekdayEveningRate"),
     saturdayBaseRate: document.getElementById("saturdayBaseRate"),
+    saturdayEarlyEnd: document.getElementById("saturdayEarlyEnd"),
     saturdayEarlyRate: document.getElementById("saturdayEarlyRate"),
+    saturdayEveningStart: document.getElementById("saturdayEveningStart"),
     saturdayEveningRate: document.getElementById("saturdayEveningRate"),
+    sundaySplitTime: document.getElementById("sundaySplitTime"),
     sundayBefore9Rate: document.getElementById("sundayBefore9Rate"),
     sundayAfter9Rate: document.getElementById("sundayAfter9Rate"),
     publicHolidayRate: document.getElementById("publicHolidayRate"),
@@ -860,6 +865,12 @@
       return;
     }
 
+    var payError = validatePaySettings(pay);
+    if (payError) {
+      els.workplaceError.textContent = payError;
+      return;
+    }
+
     if (id) {
       state.workplaces = state.workplaces.map(function (workplace) {
         return workplace.id === id ? Object.assign({}, workplace, { id: id, name: name, color: color, pay: pay }) : workplace;
@@ -934,6 +945,13 @@
   function readPaySettingsFromForm() {
     return {
       baseRate: readNumberInput(els.workplaceBaseRate, 0),
+      boundaries: {
+        weekdayEarlyEnd: readTimeInput(els.weekdayEarlyEnd, "06:00"),
+        weekdayEveningStart: readTimeInput(els.weekdayEveningStart, "18:00"),
+        saturdayEarlyEnd: readTimeInput(els.saturdayEarlyEnd, "06:00"),
+        saturdayEveningStart: readTimeInput(els.saturdayEveningStart, "18:00"),
+        sundaySplitTime: readTimeInput(els.sundaySplitTime, "09:00")
+      },
       rates: {
         weekdayBase: readNumberInput(els.weekdayBaseRate, 1),
         weekdayEarly: readNumberInput(els.weekdayEarlyRate, 1),
@@ -951,6 +969,11 @@
   function setPaySettingsForm(workplace) {
     var pay = getPaySettings(workplace || {});
     els.workplaceBaseRate.value = pay.baseRate ? String(pay.baseRate) : "";
+    els.weekdayEarlyEnd.value = pay.boundaries.weekdayEarlyEnd;
+    els.weekdayEveningStart.value = pay.boundaries.weekdayEveningStart;
+    els.saturdayEarlyEnd.value = pay.boundaries.saturdayEarlyEnd;
+    els.saturdayEveningStart.value = pay.boundaries.saturdayEveningStart;
+    els.sundaySplitTime.value = pay.boundaries.sundaySplitTime;
     els.weekdayBaseRate.value = String(pay.rates.weekdayBase);
     els.weekdayEarlyRate.value = String(pay.rates.weekdayEarly);
     els.weekdayEveningRate.value = String(pay.rates.weekdayEvening);
@@ -965,6 +988,22 @@
   function readNumberInput(input, fallback) {
     var value = Number(input.value);
     return Number.isFinite(value) && value >= 0 ? value : fallback;
+  }
+
+  function readTimeInput(input, fallback) {
+    return /^\d{2}:\d{2}$/.test(input.value) ? input.value : fallback;
+  }
+
+  function validatePaySettings(pay) {
+    if (timeToMinutes(pay.boundaries.weekdayEarlyEnd) > timeToMinutes(pay.boundaries.weekdayEveningStart)) {
+      return "Weekday before time must be earlier than after time.";
+    }
+
+    if (timeToMinutes(pay.boundaries.saturdayEarlyEnd) > timeToMinutes(pay.boundaries.saturdayEveningStart)) {
+      return "Saturday before time must be earlier than after time.";
+    }
+
+    return "";
   }
 
   function renderColorPresets() {
@@ -1132,11 +1171,19 @@
   function getPaySettings(workplace) {
     var pay = workplace && workplace.pay ? workplace.pay : {};
     var rates = pay.rates || {};
+    var boundaries = pay.boundaries || {};
     var weekday = numberOrDefault(rates.weekday, 1);
     var saturday = numberOrDefault(rates.saturday, 1);
     var sunday = numberOrDefault(rates.sunday, 1);
     return {
       baseRate: Number(pay.baseRate) || 0,
+      boundaries: {
+        weekdayEarlyEnd: validTimeOrDefault(boundaries.weekdayEarlyEnd, "06:00"),
+        weekdayEveningStart: validTimeOrDefault(boundaries.weekdayEveningStart, "18:00"),
+        saturdayEarlyEnd: validTimeOrDefault(boundaries.saturdayEarlyEnd, "06:00"),
+        saturdayEveningStart: validTimeOrDefault(boundaries.saturdayEveningStart, "18:00"),
+        sundaySplitTime: validTimeOrDefault(boundaries.sundaySplitTime, "09:00")
+      },
       rates: {
         weekdayBase: numberOrDefault(rates.weekdayBase, weekday),
         weekdayEarly: numberOrDefault(rates.weekdayEarly, weekday),
@@ -1166,24 +1213,29 @@
 
   function getPayRulesForDay(day, paySettings) {
     if (day === 6) {
+      var saturdayEarlyEnd = timeToMinutes(paySettings.boundaries.saturdayEarlyEnd);
+      var saturdayEveningStart = timeToMinutes(paySettings.boundaries.saturdayEveningStart);
       return [
-        { start: 0, end: 360, multiplier: paySettings.rates.saturdayEarly, label: "Saturday before 06:00" },
-        { start: 360, end: 1080, multiplier: paySettings.rates.saturdayBase, label: "Saturday base" },
-        { start: 1080, end: 1440, multiplier: paySettings.rates.saturdayEvening, label: "Saturday after 18:00" }
+        { start: 0, end: saturdayEarlyEnd, multiplier: paySettings.rates.saturdayEarly, label: "Saturday before " + paySettings.boundaries.saturdayEarlyEnd },
+        { start: saturdayEarlyEnd, end: saturdayEveningStart, multiplier: paySettings.rates.saturdayBase, label: "Saturday base" },
+        { start: saturdayEveningStart, end: 1440, multiplier: paySettings.rates.saturdayEvening, label: "Saturday after " + paySettings.boundaries.saturdayEveningStart }
       ];
     }
 
     if (day === 0) {
+      var sundaySplit = timeToMinutes(paySettings.boundaries.sundaySplitTime);
       return [
-        { start: 0, end: 540, multiplier: paySettings.rates.sundayBefore9, label: "Sunday before 09:00" },
-        { start: 540, end: 1440, multiplier: paySettings.rates.sundayAfter9, label: "Sunday after 09:00" }
+        { start: 0, end: sundaySplit, multiplier: paySettings.rates.sundayBefore9, label: "Sunday before " + paySettings.boundaries.sundaySplitTime },
+        { start: sundaySplit, end: 1440, multiplier: paySettings.rates.sundayAfter9, label: "Sunday after " + paySettings.boundaries.sundaySplitTime }
       ];
     }
 
+    var weekdayEarlyEnd = timeToMinutes(paySettings.boundaries.weekdayEarlyEnd);
+    var weekdayEveningStart = timeToMinutes(paySettings.boundaries.weekdayEveningStart);
     return [
-      { start: 0, end: 360, multiplier: paySettings.rates.weekdayEarly, label: "Weekday before 06:00" },
-      { start: 360, end: 1080, multiplier: paySettings.rates.weekdayBase, label: "Weekday base" },
-      { start: 1080, end: 1440, multiplier: paySettings.rates.weekdayEvening, label: "Weekday after 18:00" }
+      { start: 0, end: weekdayEarlyEnd, multiplier: paySettings.rates.weekdayEarly, label: "Weekday before " + paySettings.boundaries.weekdayEarlyEnd },
+      { start: weekdayEarlyEnd, end: weekdayEveningStart, multiplier: paySettings.rates.weekdayBase, label: "Weekday base" },
+      { start: weekdayEveningStart, end: 1440, multiplier: paySettings.rates.weekdayEvening, label: "Weekday after " + paySettings.boundaries.weekdayEveningStart }
     ];
   }
 
@@ -1204,6 +1256,10 @@
   function numberOrDefault(value, fallback) {
     var number = Number(value);
     return Number.isFinite(number) && number >= 0 ? number : fallback;
+  }
+
+  function validTimeOrDefault(value, fallback) {
+    return typeof value === "string" && /^\d{2}:\d{2}$/.test(value) ? value : fallback;
   }
 
   function getWorkplace(id) {

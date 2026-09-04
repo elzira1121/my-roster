@@ -163,11 +163,19 @@
               <input id="weekdayBaseRate" type="number" min="0" step="0.01" value="1" />
             </label>
             <label>
-              Before 06:00
+              Before
+              <input id="weekdayEarlyEnd" type="time" value="06:00" />
+            </label>
+            <label>
+              Before Rate
               <input id="weekdayEarlyRate" type="number" min="0" step="0.01" value="1" />
             </label>
             <label>
-              After 18:00
+              After
+              <input id="weekdayEveningStart" type="time" value="18:00" />
+            </label>
+            <label>
+              After Rate
               <input id="weekdayEveningRate" type="number" min="0" step="0.01" value="1" />
             </label>
           </div>
@@ -180,11 +188,19 @@
               <input id="saturdayBaseRate" type="number" min="0" step="0.01" value="1" />
             </label>
             <label>
-              Before 06:00
+              Before
+              <input id="saturdayEarlyEnd" type="time" value="06:00" />
+            </label>
+            <label>
+              Before Rate
               <input id="saturdayEarlyRate" type="number" min="0" step="0.01" value="1" />
             </label>
             <label>
-              After 18:00
+              After
+              <input id="saturdayEveningStart" type="time" value="18:00" />
+            </label>
+            <label>
+              After Rate
               <input id="saturdayEveningRate" type="number" min="0" step="0.01" value="1" />
             </label>
           </div>
@@ -193,11 +209,15 @@
           <h3>Sunday</h3>
           <div class="rate-grid">
             <label>
-              Before 09:00
+              Split Time
+              <input id="sundaySplitTime" type="time" value="09:00" />
+            </label>
+            <label>
+              Before Rate
               <input id="sundayBefore9Rate" type="number" min="0" step="0.01" value="1" />
             </label>
             <label>
-              After 09:00
+              After Rate
               <input id="sundayAfter9Rate" type="number" min="0" step="0.01" value="1" />
             </label>
           </div>
