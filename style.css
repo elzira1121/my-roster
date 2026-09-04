@@ -898,6 +898,15 @@ input[type="color"] {
   font-weight: 800;
 }
 
+.pay-rule-dash {
+  display: grid;
+  place-items: center;
+  min-height: 38px;
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 900;
+}
+
 .final-rate {
   display: grid;
   place-items: center;
