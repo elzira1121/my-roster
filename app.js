@@ -2,6 +2,7 @@
   "use strict";
 
   var STORAGE_KEY = "personalWeeklyRoster.v1";
+  var UI_STORAGE_KEY = "personalWeeklyRoster.ui.v1";
   var dayNames = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
   var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   var majorTimes = [0, 360, 720, 1080, 1440];
@@ -20,7 +21,7 @@
     "#e0008a"
   ];
   var state = loadState();
-  var activeView = "weekly";
+  var activeView = loadActiveView();
   var selectedDate = new Date();
   var cloud = {
     enabled: false,
@@ -125,6 +126,7 @@
     els.viewTabs.forEach(function (tab) {
       tab.addEventListener("click", function () {
         activeView = tab.dataset.view;
+        saveActiveView();
         render();
       });
     });
@@ -1027,6 +1029,15 @@
       return { workplaces: [], shifts: [] };
     }
     return { workplaces: [], shifts: [] };
+  }
+
+  function loadActiveView() {
+    var storedView = localStorage.getItem(UI_STORAGE_KEY);
+    return ["weekly", "monthly", "yearly"].indexOf(storedView) >= 0 ? storedView : "weekly";
+  }
+
+  function saveActiveView() {
+    localStorage.setItem(UI_STORAGE_KEY, activeView);
   }
 
   function saveState() {
