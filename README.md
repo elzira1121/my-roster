@@ -20,7 +20,7 @@ The app runs in the browser with HTML, CSS, and vanilla JavaScript. It can work 
 - Weekly, monthly, and yearly hour totals
 - Workplace-level hour breakdowns
 - Pay / Earnings page calculated from saved shifts
-- Workplace base hourly rates and penalty multipliers
+- Workplace base hourly rates and time-based penalty multipliers
 - Weekly, monthly, and yearly estimated gross pay
 - Persistent browser storage with `localStorage`
 - Optional Firebase sync with email/password sign-in
@@ -68,6 +68,8 @@ In **Manage Workplaces**, users can:
 - Change the default color later
 - Set a base hourly rate
 - Set weekday, Saturday, Sunday, and public holiday pay multipliers
+- Set early morning and evening multipliers for weekday and Saturday shifts
+- Set before-09:00 and after-09:00 multipliers for Sunday shifts
 
 When adding a shift, the workplace dropdown is populated from the user's saved workplaces.
 
@@ -96,14 +98,21 @@ It shows:
 - Estimated gross pay for the selected period
 - A workplace-level breakdown with hours and pay
 - A public holiday list for dates that should use the public holiday multiplier
+- Automatic shift splitting when a shift crosses a pay boundary
 
 Pay is estimated as:
 
 ```text
-shift hours × workplace base hourly rate × matching penalty multiplier
+shift segment hours × workplace base hourly rate × matching penalty multiplier
 ```
 
 Public holidays are entered manually for now. If a shift date is in the public holiday list, the public holiday multiplier is used before weekday, Saturday, or Sunday rates.
+
+For non-public-holiday shifts, the calculator splits each shift by time:
+
+- Weekdays: before `06:00`, `06:00-18:00`, and after `18:00`
+- Saturdays: before `06:00`, `06:00-18:00`, and after `18:00`
+- Sundays: before `09:00` and after `09:00`
 
 ## Data Storage
 

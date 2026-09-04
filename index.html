@@ -155,23 +155,61 @@
           Base Hourly Rate
           <input id="workplaceBaseRate" type="number" min="0" step="0.01" placeholder="e.g. 28.50" />
         </label>
-        <div class="rate-grid">
-          <label>
-            Weekday Rate
-            <input id="weekdayRate" type="number" min="0" step="0.01" value="1" />
-          </label>
-          <label>
-            Saturday Rate
-            <input id="saturdayRate" type="number" min="0" step="0.01" value="1" />
-          </label>
-          <label>
-            Sunday Rate
-            <input id="sundayRate" type="number" min="0" step="0.01" value="1" />
-          </label>
-          <label>
-            Public Holiday Rate
-            <input id="publicHolidayRate" type="number" min="0" step="0.01" value="1" />
-          </label>
+        <div class="rate-section">
+          <h3>Weekday</h3>
+          <div class="rate-grid">
+            <label>
+              Base
+              <input id="weekdayBaseRate" type="number" min="0" step="0.01" value="1" />
+            </label>
+            <label>
+              Before 06:00
+              <input id="weekdayEarlyRate" type="number" min="0" step="0.01" value="1" />
+            </label>
+            <label>
+              After 18:00
+              <input id="weekdayEveningRate" type="number" min="0" step="0.01" value="1" />
+            </label>
+          </div>
+        </div>
+        <div class="rate-section">
+          <h3>Saturday</h3>
+          <div class="rate-grid">
+            <label>
+              Base
+              <input id="saturdayBaseRate" type="number" min="0" step="0.01" value="1" />
+            </label>
+            <label>
+              Before 06:00
+              <input id="saturdayEarlyRate" type="number" min="0" step="0.01" value="1" />
+            </label>
+            <label>
+              After 18:00
+              <input id="saturdayEveningRate" type="number" min="0" step="0.01" value="1" />
+            </label>
+          </div>
+        </div>
+        <div class="rate-section">
+          <h3>Sunday</h3>
+          <div class="rate-grid">
+            <label>
+              Before 09:00
+              <input id="sundayBefore9Rate" type="number" min="0" step="0.01" value="1" />
+            </label>
+            <label>
+              After 09:00
+              <input id="sundayAfter9Rate" type="number" min="0" step="0.01" value="1" />
+            </label>
+          </div>
+        </div>
+        <div class="rate-section">
+          <h3>Public Holiday</h3>
+          <div class="rate-grid">
+            <label>
+              All Day
+              <input id="publicHolidayRate" type="number" min="0" step="0.01" value="1" />
+            </label>
+          </div>
         </div>
         <p class="form-error" id="workplaceError" role="alert"></p>
         <div class="modal-actions">

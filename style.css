@@ -787,6 +787,19 @@ input[type="color"] {
   gap: 8px 10px;
 }
 
+.rate-section {
+  margin-bottom: 12px;
+}
+
+.rate-section h3 {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
 .rate-grid input {
   min-height: 38px;
 }

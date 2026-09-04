@@ -92,9 +92,14 @@
     workplaceName: document.getElementById("workplaceName"),
     workplaceColor: document.getElementById("workplaceColor"),
     workplaceBaseRate: document.getElementById("workplaceBaseRate"),
-    weekdayRate: document.getElementById("weekdayRate"),
-    saturdayRate: document.getElementById("saturdayRate"),
-    sundayRate: document.getElementById("sundayRate"),
+    weekdayBaseRate: document.getElementById("weekdayBaseRate"),
+    weekdayEarlyRate: document.getElementById("weekdayEarlyRate"),
+    weekdayEveningRate: document.getElementById("weekdayEveningRate"),
+    saturdayBaseRate: document.getElementById("saturdayBaseRate"),
+    saturdayEarlyRate: document.getElementById("saturdayEarlyRate"),
+    saturdayEveningRate: document.getElementById("saturdayEveningRate"),
+    sundayBefore9Rate: document.getElementById("sundayBefore9Rate"),
+    sundayAfter9Rate: document.getElementById("sundayAfter9Rate"),
     publicHolidayRate: document.getElementById("publicHolidayRate"),
     colorPresets: document.getElementById("colorPresets"),
     workplaceError: document.getElementById("workplaceError"),
@@ -930,9 +935,14 @@
     return {
       baseRate: readNumberInput(els.workplaceBaseRate, 0),
       rates: {
-        weekday: readNumberInput(els.weekdayRate, 1),
-        saturday: readNumberInput(els.saturdayRate, 1),
-        sunday: readNumberInput(els.sundayRate, 1),
+        weekdayBase: readNumberInput(els.weekdayBaseRate, 1),
+        weekdayEarly: readNumberInput(els.weekdayEarlyRate, 1),
+        weekdayEvening: readNumberInput(els.weekdayEveningRate, 1),
+        saturdayBase: readNumberInput(els.saturdayBaseRate, 1),
+        saturdayEarly: readNumberInput(els.saturdayEarlyRate, 1),
+        saturdayEvening: readNumberInput(els.saturdayEveningRate, 1),
+        sundayBefore9: readNumberInput(els.sundayBefore9Rate, 1),
+        sundayAfter9: readNumberInput(els.sundayAfter9Rate, 1),
         publicHoliday: readNumberInput(els.publicHolidayRate, 1)
       }
     };
@@ -941,9 +951,14 @@
   function setPaySettingsForm(workplace) {
     var pay = getPaySettings(workplace || {});
     els.workplaceBaseRate.value = pay.baseRate ? String(pay.baseRate) : "";
-    els.weekdayRate.value = String(pay.rates.weekday);
-    els.saturdayRate.value = String(pay.rates.saturday);
-    els.sundayRate.value = String(pay.rates.sunday);
+    els.weekdayBaseRate.value = String(pay.rates.weekdayBase);
+    els.weekdayEarlyRate.value = String(pay.rates.weekdayEarly);
+    els.weekdayEveningRate.value = String(pay.rates.weekdayEvening);
+    els.saturdayBaseRate.value = String(pay.rates.saturdayBase);
+    els.saturdayEarlyRate.value = String(pay.rates.saturdayEarly);
+    els.saturdayEveningRate.value = String(pay.rates.saturdayEvening);
+    els.sundayBefore9Rate.value = String(pay.rates.sundayBefore9);
+    els.sundayAfter9Rate.value = String(pay.rates.sundayAfter9);
     els.publicHolidayRate.value = String(pay.rates.publicHoliday);
   }
 
@@ -1098,19 +1113,18 @@
     shifts.forEach(function (shift) {
       var workplace = getWorkplace(shift.workplaceId);
       var paySettings = getPaySettings(workplace || {});
-      var hours = (timeToMinutes(shift.end) - timeToMinutes(shift.start)) / 60;
-      if (hours <= 0) return;
+      getPaySegmentsForShift(shift, paySettings).forEach(function (segment) {
+        var hours = segment.minutes / 60;
+        var pay = hours * paySettings.baseRate * segment.multiplier;
+        totals.hours += hours;
+        totals.pay += pay;
 
-      var multiplier = getShiftMultiplier(shift, paySettings);
-      var pay = hours * paySettings.baseRate * multiplier;
-      totals.hours += hours;
-      totals.pay += pay;
-
-      if (!totals.byWorkplace[shift.workplaceId]) {
-        totals.byWorkplace[shift.workplaceId] = { hours: 0, pay: 0 };
-      }
-      totals.byWorkplace[shift.workplaceId].hours += hours;
-      totals.byWorkplace[shift.workplaceId].pay += pay;
+        if (!totals.byWorkplace[shift.workplaceId]) {
+          totals.byWorkplace[shift.workplaceId] = { hours: 0, pay: 0 };
+        }
+        totals.byWorkplace[shift.workplaceId].hours += hours;
+        totals.byWorkplace[shift.workplaceId].pay += pay;
+      });
     });
     return totals;
   }
@@ -1118,23 +1132,78 @@
   function getPaySettings(workplace) {
     var pay = workplace && workplace.pay ? workplace.pay : {};
     var rates = pay.rates || {};
+    var weekday = numberOrDefault(rates.weekday, 1);
+    var saturday = numberOrDefault(rates.saturday, 1);
+    var sunday = numberOrDefault(rates.sunday, 1);
     return {
       baseRate: Number(pay.baseRate) || 0,
       rates: {
-        weekday: Number(rates.weekday) || 1,
-        saturday: Number(rates.saturday) || 1,
-        sunday: Number(rates.sunday) || 1,
-        publicHoliday: Number(rates.publicHoliday) || 1
+        weekdayBase: numberOrDefault(rates.weekdayBase, weekday),
+        weekdayEarly: numberOrDefault(rates.weekdayEarly, weekday),
+        weekdayEvening: numberOrDefault(rates.weekdayEvening, weekday),
+        saturdayBase: numberOrDefault(rates.saturdayBase, saturday),
+        saturdayEarly: numberOrDefault(rates.saturdayEarly, saturday),
+        saturdayEvening: numberOrDefault(rates.saturdayEvening, saturday),
+        sundayBefore9: numberOrDefault(rates.sundayBefore9, sunday),
+        sundayAfter9: numberOrDefault(rates.sundayAfter9, sunday),
+        publicHoliday: numberOrDefault(rates.publicHoliday, 1)
       }
     };
   }
 
-  function getShiftMultiplier(shift, paySettings) {
-    if (state.publicHolidays.indexOf(shift.date) >= 0) return paySettings.rates.publicHoliday;
+  function getPaySegmentsForShift(shift, paySettings) {
+    var start = timeToMinutes(shift.start);
+    var end = timeToMinutes(shift.end);
+    if (end <= start) return [];
+    if (state.publicHolidays.indexOf(shift.date) >= 0) {
+      return [{ minutes: end - start, multiplier: paySettings.rates.publicHoliday, label: "Public Holiday" }];
+    }
+
     var day = parseISODate(shift.date).getDay();
-    if (day === 6) return paySettings.rates.saturday;
-    if (day === 0) return paySettings.rates.sunday;
-    return paySettings.rates.weekday;
+    var rules = getPayRulesForDay(day, paySettings);
+    return splitShiftByRules(start, end, rules);
+  }
+
+  function getPayRulesForDay(day, paySettings) {
+    if (day === 6) {
+      return [
+        { start: 0, end: 360, multiplier: paySettings.rates.saturdayEarly, label: "Saturday before 06:00" },
+        { start: 360, end: 1080, multiplier: paySettings.rates.saturdayBase, label: "Saturday base" },
+        { start: 1080, end: 1440, multiplier: paySettings.rates.saturdayEvening, label: "Saturday after 18:00" }
+      ];
+    }
+
+    if (day === 0) {
+      return [
+        { start: 0, end: 540, multiplier: paySettings.rates.sundayBefore9, label: "Sunday before 09:00" },
+        { start: 540, end: 1440, multiplier: paySettings.rates.sundayAfter9, label: "Sunday after 09:00" }
+      ];
+    }
+
+    return [
+      { start: 0, end: 360, multiplier: paySettings.rates.weekdayEarly, label: "Weekday before 06:00" },
+      { start: 360, end: 1080, multiplier: paySettings.rates.weekdayBase, label: "Weekday base" },
+      { start: 1080, end: 1440, multiplier: paySettings.rates.weekdayEvening, label: "Weekday after 18:00" }
+    ];
+  }
+
+  function splitShiftByRules(start, end, rules) {
+    return rules.map(function (rule) {
+      var segmentStart = Math.max(start, rule.start);
+      var segmentEnd = Math.min(end, rule.end);
+      return {
+        minutes: Math.max(segmentEnd - segmentStart, 0),
+        multiplier: rule.multiplier,
+        label: rule.label
+      };
+    }).filter(function (segment) {
+      return segment.minutes > 0;
+    });
+  }
+
+  function numberOrDefault(value, fallback) {
+    var number = Number(value);
+    return Number.isFinite(number) && number >= 0 ? number : fallback;
   }
 
   function getWorkplace(id) {
