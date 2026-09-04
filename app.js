@@ -102,10 +102,16 @@
     saturdayEarlyRate: document.getElementById("saturdayEarlyRate"),
     saturdayEveningStart: document.getElementById("saturdayEveningStart"),
     saturdayEveningRate: document.getElementById("saturdayEveningRate"),
-    sundaySplitTime: document.getElementById("sundaySplitTime"),
-    sundayBefore9Rate: document.getElementById("sundayBefore9Rate"),
-    sundayAfter9Rate: document.getElementById("sundayAfter9Rate"),
-    publicHolidayRate: document.getElementById("publicHolidayRate"),
+    sundayEarlyEnd: document.getElementById("sundayEarlyEnd"),
+    sundayEarlyRate: document.getElementById("sundayEarlyRate"),
+    sundayBaseRate: document.getElementById("sundayBaseRate"),
+    sundayEveningStart: document.getElementById("sundayEveningStart"),
+    sundayEveningRate: document.getElementById("sundayEveningRate"),
+    publicHolidayEarlyEnd: document.getElementById("publicHolidayEarlyEnd"),
+    publicHolidayEarlyRate: document.getElementById("publicHolidayEarlyRate"),
+    publicHolidayBaseRate: document.getElementById("publicHolidayBaseRate"),
+    publicHolidayEveningStart: document.getElementById("publicHolidayEveningStart"),
+    publicHolidayEveningRate: document.getElementById("publicHolidayEveningRate"),
     colorPresets: document.getElementById("colorPresets"),
     workplaceError: document.getElementById("workplaceError"),
     workplaceList: document.getElementById("workplaceList"),
@@ -950,7 +956,10 @@
         weekdayEveningStart: readTimeInput(els.weekdayEveningStart, "18:00"),
         saturdayEarlyEnd: readTimeInput(els.saturdayEarlyEnd, "06:00"),
         saturdayEveningStart: readTimeInput(els.saturdayEveningStart, "18:00"),
-        sundaySplitTime: readTimeInput(els.sundaySplitTime, "09:00")
+        sundayEarlyEnd: readTimeInput(els.sundayEarlyEnd, "09:00"),
+        sundayEveningStart: readTimeInput(els.sundayEveningStart, "09:00"),
+        publicHolidayEarlyEnd: readTimeInput(els.publicHolidayEarlyEnd, "06:00"),
+        publicHolidayEveningStart: readTimeInput(els.publicHolidayEveningStart, "18:00")
       },
       rates: {
         weekdayBase: readNumberInput(els.weekdayBaseRate, 1),
@@ -959,9 +968,12 @@
         saturdayBase: readNumberInput(els.saturdayBaseRate, 1),
         saturdayEarly: readNumberInput(els.saturdayEarlyRate, 1),
         saturdayEvening: readNumberInput(els.saturdayEveningRate, 1),
-        sundayBefore9: readNumberInput(els.sundayBefore9Rate, 1),
-        sundayAfter9: readNumberInput(els.sundayAfter9Rate, 1),
-        publicHoliday: readNumberInput(els.publicHolidayRate, 1)
+        sundayBase: readNumberInput(els.sundayBaseRate, 1),
+        sundayEarly: readNumberInput(els.sundayEarlyRate, 1),
+        sundayEvening: readNumberInput(els.sundayEveningRate, 1),
+        publicHolidayBase: readNumberInput(els.publicHolidayBaseRate, 1),
+        publicHolidayEarly: readNumberInput(els.publicHolidayEarlyRate, 1),
+        publicHolidayEvening: readNumberInput(els.publicHolidayEveningRate, 1)
       }
     };
   }
@@ -973,16 +985,22 @@
     els.weekdayEveningStart.value = pay.boundaries.weekdayEveningStart;
     els.saturdayEarlyEnd.value = pay.boundaries.saturdayEarlyEnd;
     els.saturdayEveningStart.value = pay.boundaries.saturdayEveningStart;
-    els.sundaySplitTime.value = pay.boundaries.sundaySplitTime;
+    els.sundayEarlyEnd.value = pay.boundaries.sundayEarlyEnd;
+    els.sundayEveningStart.value = pay.boundaries.sundayEveningStart;
+    els.publicHolidayEarlyEnd.value = pay.boundaries.publicHolidayEarlyEnd;
+    els.publicHolidayEveningStart.value = pay.boundaries.publicHolidayEveningStart;
     els.weekdayBaseRate.value = String(pay.rates.weekdayBase);
     els.weekdayEarlyRate.value = String(pay.rates.weekdayEarly);
     els.weekdayEveningRate.value = String(pay.rates.weekdayEvening);
     els.saturdayBaseRate.value = String(pay.rates.saturdayBase);
     els.saturdayEarlyRate.value = String(pay.rates.saturdayEarly);
     els.saturdayEveningRate.value = String(pay.rates.saturdayEvening);
-    els.sundayBefore9Rate.value = String(pay.rates.sundayBefore9);
-    els.sundayAfter9Rate.value = String(pay.rates.sundayAfter9);
-    els.publicHolidayRate.value = String(pay.rates.publicHoliday);
+    els.sundayBaseRate.value = String(pay.rates.sundayBase);
+    els.sundayEarlyRate.value = String(pay.rates.sundayEarly);
+    els.sundayEveningRate.value = String(pay.rates.sundayEvening);
+    els.publicHolidayBaseRate.value = String(pay.rates.publicHolidayBase);
+    els.publicHolidayEarlyRate.value = String(pay.rates.publicHolidayEarly);
+    els.publicHolidayEveningRate.value = String(pay.rates.publicHolidayEvening);
   }
 
   function readNumberInput(input, fallback) {
@@ -991,7 +1009,7 @@
   }
 
   function readTimeInput(input, fallback) {
-    return /^\d{2}:\d{2}$/.test(input.value) ? input.value : fallback;
+    return normalizeTimeValue(input.value) || fallback;
   }
 
   function validatePaySettings(pay) {
@@ -1001,6 +1019,14 @@
 
     if (timeToMinutes(pay.boundaries.saturdayEarlyEnd) > timeToMinutes(pay.boundaries.saturdayEveningStart)) {
       return "Saturday before time must be earlier than after time.";
+    }
+
+    if (timeToMinutes(pay.boundaries.sundayEarlyEnd) > timeToMinutes(pay.boundaries.sundayEveningStart)) {
+      return "Sunday before time must be earlier than after time.";
+    }
+
+    if (timeToMinutes(pay.boundaries.publicHolidayEarlyEnd) > timeToMinutes(pay.boundaries.publicHolidayEveningStart)) {
+      return "Public holiday before time must be earlier than after time.";
     }
 
     return "";
@@ -1182,7 +1208,10 @@
         weekdayEveningStart: validTimeOrDefault(boundaries.weekdayEveningStart, "18:00"),
         saturdayEarlyEnd: validTimeOrDefault(boundaries.saturdayEarlyEnd, "06:00"),
         saturdayEveningStart: validTimeOrDefault(boundaries.saturdayEveningStart, "18:00"),
-        sundaySplitTime: validTimeOrDefault(boundaries.sundaySplitTime, "09:00")
+        sundayEarlyEnd: validTimeOrDefault(boundaries.sundayEarlyEnd || boundaries.sundaySplitTime, "09:00"),
+        sundayEveningStart: validTimeOrDefault(boundaries.sundayEveningStart || boundaries.sundaySplitTime, "09:00"),
+        publicHolidayEarlyEnd: validTimeOrDefault(boundaries.publicHolidayEarlyEnd, "06:00"),
+        publicHolidayEveningStart: validTimeOrDefault(boundaries.publicHolidayEveningStart, "18:00")
       },
       rates: {
         weekdayBase: numberOrDefault(rates.weekdayBase, weekday),
@@ -1191,9 +1220,12 @@
         saturdayBase: numberOrDefault(rates.saturdayBase, saturday),
         saturdayEarly: numberOrDefault(rates.saturdayEarly, saturday),
         saturdayEvening: numberOrDefault(rates.saturdayEvening, saturday),
-        sundayBefore9: numberOrDefault(rates.sundayBefore9, sunday),
-        sundayAfter9: numberOrDefault(rates.sundayAfter9, sunday),
-        publicHoliday: numberOrDefault(rates.publicHoliday, 1)
+        sundayBase: numberOrDefault(rates.sundayBase, sunday),
+        sundayEarly: numberOrDefault(rates.sundayEarly, numberOrDefault(rates.sundayBefore9, sunday)),
+        sundayEvening: numberOrDefault(rates.sundayEvening, numberOrDefault(rates.sundayAfter9, sunday)),
+        publicHolidayBase: numberOrDefault(rates.publicHolidayBase, numberOrDefault(rates.publicHoliday, 1)),
+        publicHolidayEarly: numberOrDefault(rates.publicHolidayEarly, numberOrDefault(rates.publicHoliday, 1)),
+        publicHolidayEvening: numberOrDefault(rates.publicHolidayEvening, numberOrDefault(rates.publicHoliday, 1))
       }
     };
   }
@@ -1203,7 +1235,7 @@
     var end = timeToMinutes(shift.end);
     if (end <= start) return [];
     if (state.publicHolidays.indexOf(shift.date) >= 0) {
-      return [{ minutes: end - start, multiplier: paySettings.rates.publicHoliday, label: "Public Holiday" }];
+      return splitShiftByRules(start, end, getPublicHolidayPayRules(paySettings));
     }
 
     var day = parseISODate(shift.date).getDay();
@@ -1223,10 +1255,12 @@
     }
 
     if (day === 0) {
-      var sundaySplit = timeToMinutes(paySettings.boundaries.sundaySplitTime);
+      var sundayEarlyEnd = timeToMinutes(paySettings.boundaries.sundayEarlyEnd);
+      var sundayEveningStart = timeToMinutes(paySettings.boundaries.sundayEveningStart);
       return [
-        { start: 0, end: sundaySplit, multiplier: paySettings.rates.sundayBefore9, label: "Sunday before " + paySettings.boundaries.sundaySplitTime },
-        { start: sundaySplit, end: 1440, multiplier: paySettings.rates.sundayAfter9, label: "Sunday after " + paySettings.boundaries.sundaySplitTime }
+        { start: 0, end: sundayEarlyEnd, multiplier: paySettings.rates.sundayEarly, label: "Sunday before " + paySettings.boundaries.sundayEarlyEnd },
+        { start: sundayEarlyEnd, end: sundayEveningStart, multiplier: paySettings.rates.sundayBase, label: "Sunday base" },
+        { start: sundayEveningStart, end: 1440, multiplier: paySettings.rates.sundayEvening, label: "Sunday after " + paySettings.boundaries.sundayEveningStart }
       ];
     }
 
@@ -1236,6 +1270,16 @@
       { start: 0, end: weekdayEarlyEnd, multiplier: paySettings.rates.weekdayEarly, label: "Weekday before " + paySettings.boundaries.weekdayEarlyEnd },
       { start: weekdayEarlyEnd, end: weekdayEveningStart, multiplier: paySettings.rates.weekdayBase, label: "Weekday base" },
       { start: weekdayEveningStart, end: 1440, multiplier: paySettings.rates.weekdayEvening, label: "Weekday after " + paySettings.boundaries.weekdayEveningStart }
+    ];
+  }
+
+  function getPublicHolidayPayRules(paySettings) {
+    var earlyEnd = timeToMinutes(paySettings.boundaries.publicHolidayEarlyEnd);
+    var eveningStart = timeToMinutes(paySettings.boundaries.publicHolidayEveningStart);
+    return [
+      { start: 0, end: earlyEnd, multiplier: paySettings.rates.publicHolidayEarly, label: "Public Holiday before " + paySettings.boundaries.publicHolidayEarlyEnd },
+      { start: earlyEnd, end: eveningStart, multiplier: paySettings.rates.publicHolidayBase, label: "Public Holiday base" },
+      { start: eveningStart, end: 1440, multiplier: paySettings.rates.publicHolidayEvening, label: "Public Holiday after " + paySettings.boundaries.publicHolidayEveningStart }
     ];
   }
 
@@ -1259,7 +1303,18 @@
   }
 
   function validTimeOrDefault(value, fallback) {
-    return typeof value === "string" && /^\d{2}:\d{2}$/.test(value) ? value : fallback;
+    return normalizeTimeValue(value) || fallback;
+  }
+
+  function normalizeTimeValue(value) {
+    if (typeof value !== "string") return "";
+    var match = value.trim().match(/^(\d{1,2}):(\d{2})$/);
+    if (!match) return "";
+    var hour = Number(match[1]);
+    var minute = Number(match[2]);
+    if (!Number.isInteger(hour) || !Number.isInteger(minute)) return "";
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return "";
+    return pad(hour) + ":" + pad(minute);
   }
 
   function getWorkplace(id) {

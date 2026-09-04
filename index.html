@@ -157,78 +157,94 @@
         </label>
         <div class="rate-section">
           <h3>Weekday</h3>
-          <div class="rate-grid">
-            <label>
-              Base
-              <input id="weekdayBaseRate" type="number" min="0" step="0.01" value="1" />
-            </label>
-            <label>
-              Before
-              <input id="weekdayEarlyEnd" type="time" value="06:00" />
-            </label>
-            <label>
-              Before Rate
-              <input id="weekdayEarlyRate" type="number" min="0" step="0.01" value="1" />
-            </label>
-            <label>
-              After
-              <input id="weekdayEveningStart" type="time" value="18:00" />
-            </label>
-            <label>
-              After Rate
-              <input id="weekdayEveningRate" type="number" min="0" step="0.01" value="1" />
-            </label>
+          <div class="pay-rules">
+            <div class="pay-rule pay-rule-head">
+              <span>Rule</span><b>Time</b><b>Rate</b>
+            </div>
+            <div class="pay-rule">
+              <span>Before</span>
+              <input class="time-input" id="weekdayEarlyEnd" type="text" inputmode="numeric" maxlength="5" value="06:00" aria-label="Weekday before time" />
+              <input id="weekdayEarlyRate" type="number" min="0" step="0.01" value="1" aria-label="Weekday before rate" />
+            </div>
+            <div class="pay-rule">
+              <span>Base</span>
+              <b>middle</b>
+              <input id="weekdayBaseRate" type="number" min="0" step="0.01" value="1" aria-label="Weekday base rate" />
+            </div>
+            <div class="pay-rule">
+              <span>After</span>
+              <input class="time-input" id="weekdayEveningStart" type="text" inputmode="numeric" maxlength="5" value="18:00" aria-label="Weekday after time" />
+              <input id="weekdayEveningRate" type="number" min="0" step="0.01" value="1" aria-label="Weekday after rate" />
+            </div>
           </div>
         </div>
         <div class="rate-section">
           <h3>Saturday</h3>
-          <div class="rate-grid">
-            <label>
-              Base
-              <input id="saturdayBaseRate" type="number" min="0" step="0.01" value="1" />
-            </label>
-            <label>
-              Before
-              <input id="saturdayEarlyEnd" type="time" value="06:00" />
-            </label>
-            <label>
-              Before Rate
-              <input id="saturdayEarlyRate" type="number" min="0" step="0.01" value="1" />
-            </label>
-            <label>
-              After
-              <input id="saturdayEveningStart" type="time" value="18:00" />
-            </label>
-            <label>
-              After Rate
-              <input id="saturdayEveningRate" type="number" min="0" step="0.01" value="1" />
-            </label>
+          <div class="pay-rules">
+            <div class="pay-rule pay-rule-head">
+              <span>Rule</span><b>Time</b><b>Rate</b>
+            </div>
+            <div class="pay-rule">
+              <span>Before</span>
+              <input class="time-input" id="saturdayEarlyEnd" type="text" inputmode="numeric" maxlength="5" value="06:00" aria-label="Saturday before time" />
+              <input id="saturdayEarlyRate" type="number" min="0" step="0.01" value="1" aria-label="Saturday before rate" />
+            </div>
+            <div class="pay-rule">
+              <span>Base</span>
+              <b>middle</b>
+              <input id="saturdayBaseRate" type="number" min="0" step="0.01" value="1" aria-label="Saturday base rate" />
+            </div>
+            <div class="pay-rule">
+              <span>After</span>
+              <input class="time-input" id="saturdayEveningStart" type="text" inputmode="numeric" maxlength="5" value="18:00" aria-label="Saturday after time" />
+              <input id="saturdayEveningRate" type="number" min="0" step="0.01" value="1" aria-label="Saturday after rate" />
+            </div>
           </div>
         </div>
         <div class="rate-section">
           <h3>Sunday</h3>
-          <div class="rate-grid">
-            <label>
-              Split Time
-              <input id="sundaySplitTime" type="time" value="09:00" />
-            </label>
-            <label>
-              Before Rate
-              <input id="sundayBefore9Rate" type="number" min="0" step="0.01" value="1" />
-            </label>
-            <label>
-              After Rate
-              <input id="sundayAfter9Rate" type="number" min="0" step="0.01" value="1" />
-            </label>
+          <div class="pay-rules">
+            <div class="pay-rule pay-rule-head">
+              <span>Rule</span><b>Time</b><b>Rate</b>
+            </div>
+            <div class="pay-rule">
+              <span>Before</span>
+              <input class="time-input" id="sundayEarlyEnd" type="text" inputmode="numeric" maxlength="5" value="09:00" aria-label="Sunday before time" />
+              <input id="sundayEarlyRate" type="number" min="0" step="0.01" value="1" aria-label="Sunday before rate" />
+            </div>
+            <div class="pay-rule">
+              <span>Base</span>
+              <b>middle</b>
+              <input id="sundayBaseRate" type="number" min="0" step="0.01" value="1" aria-label="Sunday base rate" />
+            </div>
+            <div class="pay-rule">
+              <span>After</span>
+              <input class="time-input" id="sundayEveningStart" type="text" inputmode="numeric" maxlength="5" value="09:00" aria-label="Sunday after time" />
+              <input id="sundayEveningRate" type="number" min="0" step="0.01" value="1" aria-label="Sunday after rate" />
+            </div>
           </div>
         </div>
         <div class="rate-section">
           <h3>Public Holiday</h3>
-          <div class="rate-grid">
-            <label>
-              All Day
-              <input id="publicHolidayRate" type="number" min="0" step="0.01" value="1" />
-            </label>
+          <div class="pay-rules">
+            <div class="pay-rule pay-rule-head">
+              <span>Rule</span><b>Time</b><b>Rate</b>
+            </div>
+            <div class="pay-rule">
+              <span>Before</span>
+              <input class="time-input" id="publicHolidayEarlyEnd" type="text" inputmode="numeric" maxlength="5" value="06:00" aria-label="Public holiday before time" />
+              <input id="publicHolidayEarlyRate" type="number" min="0" step="0.01" value="1" aria-label="Public holiday before rate" />
+            </div>
+            <div class="pay-rule">
+              <span>Base</span>
+              <b>middle</b>
+              <input id="publicHolidayBaseRate" type="number" min="0" step="0.01" value="1" aria-label="Public holiday base rate" />
+            </div>
+            <div class="pay-rule">
+              <span>After</span>
+              <input class="time-input" id="publicHolidayEveningStart" type="text" inputmode="numeric" maxlength="5" value="18:00" aria-label="Public holiday after time" />
+              <input id="publicHolidayEveningRate" type="number" min="0" step="0.01" value="1" aria-label="Public holiday after rate" />
+            </div>
           </div>
         </div>
         <p class="form-error" id="workplaceError" role="alert"></p>

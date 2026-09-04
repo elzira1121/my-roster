@@ -804,6 +804,56 @@ input[type="color"] {
   min-height: 38px;
 }
 
+.pay-rules {
+  display: grid;
+  gap: 6px;
+}
+
+.pay-rule {
+  display: grid;
+  grid-template-columns: 64px minmax(72px, 1fr) minmax(72px, 1fr);
+  align-items: center;
+  gap: 7px;
+}
+
+.pay-rule span {
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.pay-rule b {
+  display: grid;
+  place-items: center;
+  min-height: 38px;
+  border: 1px solid var(--soft-line);
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.pay-rule-head {
+  margin-bottom: -2px;
+}
+
+.pay-rule-head span,
+.pay-rule-head b {
+  min-height: auto;
+  border: 0;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.pay-rule input {
+  min-height: 38px;
+  padding: 7px 8px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .form-error {
   min-height: 18px;
   margin: 0 0 10px;
