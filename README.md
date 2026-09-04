@@ -20,8 +20,10 @@ The app runs in the browser with HTML, CSS, and vanilla JavaScript. It can work 
 - Weekly, monthly, and yearly hour totals
 - Workplace-level hour breakdowns
 - Pay / Earnings page calculated from saved shifts
-- Workplace base hourly rates and time-based penalty multipliers
+- Workplace base hourly rates, editable pay split times, penalty multipliers, and final hourly rate previews
+- Payslip-style earnings details grouped by ordinary and penalty rates
 - Weekly, monthly, and yearly estimated gross pay
+- Manually added public holidays with optional notes
 - Persistent browser storage with `localStorage`
 - Optional Firebase sync with email/password sign-in
 - Works by opening `index.html` directly
@@ -69,6 +71,7 @@ In **Manage Workplaces**, users can:
 - Set a base hourly rate
 - Set weekday, Saturday, Sunday, and public holiday pay multipliers
 - Set custom early morning and evening time boundaries for weekday, Saturday, Sunday, and public holiday shifts
+- Preview the final hourly rate for each rule
 
 When adding a shift, the workplace dropdown is populated from the user's saved workplaces.
 
@@ -83,6 +86,8 @@ Each shift includes:
 
 Times use a 24-hour format. The time selector supports 5-minute steps.
 
+Pay rule split times also use 24-hour format. They can be typed manually or adjusted with the hour and minute stepper controls.
+
 In the weekly view, each shift appears as a colored block. The color comes from the selected workplace's default color.
 
 ## Pay / Earnings
@@ -96,7 +101,8 @@ It shows:
 - Total hours for the current week, month, or year
 - Estimated gross pay for the selected period
 - A workplace-level breakdown with hours and pay
-- A public holiday list for dates that should use the public holiday multiplier
+- Payslip-style detail rows with description, hours, final hourly rate, period begin/end dates, and earnings
+- A public holiday list for dates that should use public holiday rules
 - Automatic shift splitting when a shift crosses a pay boundary
 
 Pay is estimated as:
@@ -106,6 +112,8 @@ shift segment hours × workplace base hourly rate × matching penalty multiplier
 ```
 
 Public holidays are entered manually for now. If a shift date is in the public holiday list, the public holiday rule set is used before weekday, Saturday, or Sunday rates.
+
+Public holiday entries can include a short note, such as the holiday name. Notes are displayed beside the date.
 
 For non-public-holiday shifts, the calculator splits each shift by the workplace's saved time boundaries:
 
@@ -124,7 +132,7 @@ The app saves:
 - Workplace colors
 - Workplace pay settings
 - Shifts
-- Public holiday dates
+- Public holiday dates and notes
 
 Data remains available after refreshing the page or closing and reopening the browser on the same device and browser profile.
 
@@ -139,6 +147,8 @@ users/{userId}/rosters/default
 ```
 
 Each signed-in user has their own private document.
+
+Firebase stores the same roster data as the browser version: workplaces, pay settings, shifts, public holiday dates, and public holiday notes.
 
 ## Firebase Sync
 
