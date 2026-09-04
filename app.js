@@ -135,6 +135,7 @@
     renderTimeControls();
     renderColorPresets();
     bindEvents();
+    bindPayTimeSteppers();
     initFirebase();
     render();
   }
@@ -949,6 +950,7 @@
   }
 
   function readPaySettingsFromForm() {
+    syncAllPayTimeSteppersToHidden();
     return {
       baseRate: readNumberInput(els.workplaceBaseRate, 0),
       boundaries: {
@@ -981,14 +983,14 @@
   function setPaySettingsForm(workplace) {
     var pay = getPaySettings(workplace || {});
     els.workplaceBaseRate.value = pay.baseRate ? String(pay.baseRate) : "";
-    els.weekdayEarlyEnd.value = pay.boundaries.weekdayEarlyEnd;
-    els.weekdayEveningStart.value = pay.boundaries.weekdayEveningStart;
-    els.saturdayEarlyEnd.value = pay.boundaries.saturdayEarlyEnd;
-    els.saturdayEveningStart.value = pay.boundaries.saturdayEveningStart;
-    els.sundayEarlyEnd.value = pay.boundaries.sundayEarlyEnd;
-    els.sundayEveningStart.value = pay.boundaries.sundayEveningStart;
-    els.publicHolidayEarlyEnd.value = pay.boundaries.publicHolidayEarlyEnd;
-    els.publicHolidayEveningStart.value = pay.boundaries.publicHolidayEveningStart;
+    setPayBoundaryValue(els.weekdayEarlyEnd, pay.boundaries.weekdayEarlyEnd);
+    setPayBoundaryValue(els.weekdayEveningStart, pay.boundaries.weekdayEveningStart);
+    setPayBoundaryValue(els.saturdayEarlyEnd, pay.boundaries.saturdayEarlyEnd);
+    setPayBoundaryValue(els.saturdayEveningStart, pay.boundaries.saturdayEveningStart);
+    setPayBoundaryValue(els.sundayEarlyEnd, pay.boundaries.sundayEarlyEnd);
+    setPayBoundaryValue(els.sundayEveningStart, pay.boundaries.sundayEveningStart);
+    setPayBoundaryValue(els.publicHolidayEarlyEnd, pay.boundaries.publicHolidayEarlyEnd);
+    setPayBoundaryValue(els.publicHolidayEveningStart, pay.boundaries.publicHolidayEveningStart);
     els.weekdayBaseRate.value = String(pay.rates.weekdayBase);
     els.weekdayEarlyRate.value = String(pay.rates.weekdayEarly);
     els.weekdayEveningRate.value = String(pay.rates.weekdayEvening);
@@ -1001,6 +1003,75 @@
     els.publicHolidayBaseRate.value = String(pay.rates.publicHolidayBase);
     els.publicHolidayEarlyRate.value = String(pay.rates.publicHolidayEarly);
     els.publicHolidayEveningRate.value = String(pay.rates.publicHolidayEvening);
+  }
+
+  function bindPayTimeSteppers() {
+    document.querySelectorAll(".time-stepper").forEach(function (control) {
+      control.querySelectorAll("input").forEach(function (input) {
+        input.addEventListener("input", function () {
+          syncPayTimeStepperToHidden(control, false);
+        });
+        input.addEventListener("change", function () {
+          syncPayTimeStepperToHidden(control, true);
+        });
+        input.addEventListener("blur", function () {
+          syncPayTimeStepperToHidden(control, true);
+        });
+      });
+      renderPayTimeStepper(control.dataset.timeControl);
+    });
+  }
+
+  function setPayBoundaryValue(input, value) {
+    input.value = normalizeTimeValue(value) || "00:00";
+    renderPayTimeStepper(input.id);
+  }
+
+  function renderPayTimeStepper(targetId) {
+    var control = document.querySelector('[data-time-control="' + targetId + '"]');
+    var input = document.getElementById(targetId);
+    if (!control || !input) return;
+
+    var time = normalizeTimeValue(input.value) || "00:00";
+    var parts = time.split(":");
+    var hourInput = control.querySelector(".time-hour");
+    var minuteInput = control.querySelector(".time-minute");
+    if (hourInput) hourInput.value = parts[0];
+    if (minuteInput) minuteInput.value = parts[1];
+  }
+
+  function syncAllPayTimeSteppersToHidden() {
+    document.querySelectorAll(".time-stepper").forEach(function (control) {
+      syncPayTimeStepperToHidden(control, true);
+    });
+  }
+
+  function syncPayTimeStepperToHidden(control, shouldClamp) {
+    var target = document.getElementById(control.dataset.timeControl);
+    var hourInput = control.querySelector(".time-hour");
+    var minuteInput = control.querySelector(".time-minute");
+    if (!target || !hourInput || !minuteInput) return;
+
+    var hourText = hourInput.value.trim();
+    var minuteText = minuteInput.value.trim();
+    var hour = Number(hourText);
+    var minute = Number(minuteText);
+    if (shouldClamp) {
+      hour = clampInteger(hour, 0, 23);
+      minute = clampInteger(minute, 0, 59);
+      hourInput.value = pad(hour);
+      minuteInput.value = pad(minute);
+    } else if (!hourText || !minuteText || !Number.isInteger(hour) || !Number.isInteger(minute) || hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+      return;
+    }
+
+    target.value = pad(hour) + ":" + pad(minute);
+  }
+
+  function clampInteger(value, min, max) {
+    var number = Number(value);
+    if (!Number.isFinite(number)) return min;
+    return Math.min(Math.max(Math.round(number), min), max);
   }
 
   function readNumberInput(input, fallback) {

@@ -163,17 +163,27 @@
             </div>
             <div class="pay-rule">
               <span>Before</span>
-              <input class="time-input" id="weekdayEarlyEnd" type="text" inputmode="numeric" maxlength="5" value="06:00" aria-label="Weekday before time" />
+              <input id="weekdayEarlyEnd" type="hidden" value="06:00" />
+              <div class="time-stepper" data-time-control="weekdayEarlyEnd" aria-label="Weekday before time">
+                <input class="time-hour" type="number" min="0" max="23" step="1" value="06" aria-label="Hour" />
+                <span>:</span>
+                <input class="time-minute" type="number" min="0" max="59" step="1" value="00" aria-label="Minute" />
+              </div>
               <input id="weekdayEarlyRate" type="number" min="0" step="0.01" value="1" aria-label="Weekday before rate" />
             </div>
             <div class="pay-rule">
               <span>Base</span>
-              <b>middle</b>
+              <em>Between</em>
               <input id="weekdayBaseRate" type="number" min="0" step="0.01" value="1" aria-label="Weekday base rate" />
             </div>
             <div class="pay-rule">
               <span>After</span>
-              <input class="time-input" id="weekdayEveningStart" type="text" inputmode="numeric" maxlength="5" value="18:00" aria-label="Weekday after time" />
+              <input id="weekdayEveningStart" type="hidden" value="18:00" />
+              <div class="time-stepper" data-time-control="weekdayEveningStart" aria-label="Weekday after time">
+                <input class="time-hour" type="number" min="0" max="23" step="1" value="18" aria-label="Hour" />
+                <span>:</span>
+                <input class="time-minute" type="number" min="0" max="59" step="1" value="00" aria-label="Minute" />
+              </div>
               <input id="weekdayEveningRate" type="number" min="0" step="0.01" value="1" aria-label="Weekday after rate" />
             </div>
           </div>
@@ -186,17 +196,27 @@
             </div>
             <div class="pay-rule">
               <span>Before</span>
-              <input class="time-input" id="saturdayEarlyEnd" type="text" inputmode="numeric" maxlength="5" value="06:00" aria-label="Saturday before time" />
+              <input id="saturdayEarlyEnd" type="hidden" value="06:00" />
+              <div class="time-stepper" data-time-control="saturdayEarlyEnd" aria-label="Saturday before time">
+                <input class="time-hour" type="number" min="0" max="23" step="1" value="06" aria-label="Hour" />
+                <span>:</span>
+                <input class="time-minute" type="number" min="0" max="59" step="1" value="00" aria-label="Minute" />
+              </div>
               <input id="saturdayEarlyRate" type="number" min="0" step="0.01" value="1" aria-label="Saturday before rate" />
             </div>
             <div class="pay-rule">
               <span>Base</span>
-              <b>middle</b>
+              <em>Between</em>
               <input id="saturdayBaseRate" type="number" min="0" step="0.01" value="1" aria-label="Saturday base rate" />
             </div>
             <div class="pay-rule">
               <span>After</span>
-              <input class="time-input" id="saturdayEveningStart" type="text" inputmode="numeric" maxlength="5" value="18:00" aria-label="Saturday after time" />
+              <input id="saturdayEveningStart" type="hidden" value="18:00" />
+              <div class="time-stepper" data-time-control="saturdayEveningStart" aria-label="Saturday after time">
+                <input class="time-hour" type="number" min="0" max="23" step="1" value="18" aria-label="Hour" />
+                <span>:</span>
+                <input class="time-minute" type="number" min="0" max="59" step="1" value="00" aria-label="Minute" />
+              </div>
               <input id="saturdayEveningRate" type="number" min="0" step="0.01" value="1" aria-label="Saturday after rate" />
             </div>
           </div>
@@ -209,17 +229,27 @@
             </div>
             <div class="pay-rule">
               <span>Before</span>
-              <input class="time-input" id="sundayEarlyEnd" type="text" inputmode="numeric" maxlength="5" value="09:00" aria-label="Sunday before time" />
+              <input id="sundayEarlyEnd" type="hidden" value="09:00" />
+              <div class="time-stepper" data-time-control="sundayEarlyEnd" aria-label="Sunday before time">
+                <input class="time-hour" type="number" min="0" max="23" step="1" value="09" aria-label="Hour" />
+                <span>:</span>
+                <input class="time-minute" type="number" min="0" max="59" step="1" value="00" aria-label="Minute" />
+              </div>
               <input id="sundayEarlyRate" type="number" min="0" step="0.01" value="1" aria-label="Sunday before rate" />
             </div>
             <div class="pay-rule">
               <span>Base</span>
-              <b>middle</b>
+              <em>Between</em>
               <input id="sundayBaseRate" type="number" min="0" step="0.01" value="1" aria-label="Sunday base rate" />
             </div>
             <div class="pay-rule">
               <span>After</span>
-              <input class="time-input" id="sundayEveningStart" type="text" inputmode="numeric" maxlength="5" value="09:00" aria-label="Sunday after time" />
+              <input id="sundayEveningStart" type="hidden" value="09:00" />
+              <div class="time-stepper" data-time-control="sundayEveningStart" aria-label="Sunday after time">
+                <input class="time-hour" type="number" min="0" max="23" step="1" value="09" aria-label="Hour" />
+                <span>:</span>
+                <input class="time-minute" type="number" min="0" max="59" step="1" value="00" aria-label="Minute" />
+              </div>
               <input id="sundayEveningRate" type="number" min="0" step="0.01" value="1" aria-label="Sunday after rate" />
             </div>
           </div>
@@ -232,17 +262,27 @@
             </div>
             <div class="pay-rule">
               <span>Before</span>
-              <input class="time-input" id="publicHolidayEarlyEnd" type="text" inputmode="numeric" maxlength="5" value="06:00" aria-label="Public holiday before time" />
+              <input id="publicHolidayEarlyEnd" type="hidden" value="06:00" />
+              <div class="time-stepper" data-time-control="publicHolidayEarlyEnd" aria-label="Public holiday before time">
+                <input class="time-hour" type="number" min="0" max="23" step="1" value="06" aria-label="Hour" />
+                <span>:</span>
+                <input class="time-minute" type="number" min="0" max="59" step="1" value="00" aria-label="Minute" />
+              </div>
               <input id="publicHolidayEarlyRate" type="number" min="0" step="0.01" value="1" aria-label="Public holiday before rate" />
             </div>
             <div class="pay-rule">
               <span>Base</span>
-              <b>middle</b>
+              <em>Between</em>
               <input id="publicHolidayBaseRate" type="number" min="0" step="0.01" value="1" aria-label="Public holiday base rate" />
             </div>
             <div class="pay-rule">
               <span>After</span>
-              <input class="time-input" id="publicHolidayEveningStart" type="text" inputmode="numeric" maxlength="5" value="18:00" aria-label="Public holiday after time" />
+              <input id="publicHolidayEveningStart" type="hidden" value="18:00" />
+              <div class="time-stepper" data-time-control="publicHolidayEveningStart" aria-label="Public holiday after time">
+                <input class="time-hour" type="number" min="0" max="23" step="1" value="18" aria-label="Hour" />
+                <span>:</span>
+                <input class="time-minute" type="number" min="0" max="59" step="1" value="00" aria-label="Minute" />
+              </div>
               <input id="publicHolidayEveningRate" type="number" min="0" step="0.01" value="1" aria-label="Public holiday after rate" />
             </div>
           </div>
