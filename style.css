@@ -560,8 +560,7 @@ button {
 }
 
 .holiday-main {
-  display: grid;
-  grid-template-columns: minmax(120px, auto) minmax(160px, 1fr);
+  display: flex;
   align-items: center;
   gap: 8px;
   min-width: 0;
@@ -572,6 +571,7 @@ button {
 }
 
 .holiday-main span {
+  flex: 1;
   min-width: 0;
   overflow: hidden;
   color: var(--muted);
@@ -1240,8 +1240,7 @@ input[type="color"] {
   }
 
   .holiday-main {
-    grid-template-columns: 1fr;
-    gap: 5px;
+    gap: 7px;
   }
 
   .rate-grid {
