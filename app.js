@@ -990,8 +990,8 @@
         weekdayEveningStart: readTimeInput(els.weekdayEveningStart, "18:00"),
         saturdayEarlyEnd: readTimeInput(els.saturdayEarlyEnd, "06:00"),
         saturdayEveningStart: readTimeInput(els.saturdayEveningStart, "18:00"),
-        sundayEarlyEnd: readTimeInput(els.sundayEarlyEnd, "09:00"),
-        sundayEveningStart: readTimeInput(els.sundayEveningStart, "09:00"),
+        sundayEarlyEnd: readTimeInput(els.sundayEarlyEnd, "06:00"),
+        sundayEveningStart: readTimeInput(els.sundayEveningStart, "18:00"),
         publicHolidayEarlyEnd: readTimeInput(els.publicHolidayEarlyEnd, "06:00"),
         publicHolidayEveningStart: readTimeInput(els.publicHolidayEveningStart, "18:00")
       },
@@ -1361,8 +1361,8 @@
         weekdayEveningStart: validTimeOrDefault(boundaries.weekdayEveningStart, "18:00"),
         saturdayEarlyEnd: validTimeOrDefault(boundaries.saturdayEarlyEnd, "06:00"),
         saturdayEveningStart: validTimeOrDefault(boundaries.saturdayEveningStart, "18:00"),
-        sundayEarlyEnd: validTimeOrDefault(boundaries.sundayEarlyEnd || boundaries.sundaySplitTime, "09:00"),
-        sundayEveningStart: validTimeOrDefault(boundaries.sundayEveningStart || boundaries.sundaySplitTime, "09:00"),
+        sundayEarlyEnd: validTimeOrDefault(boundaries.sundayEarlyEnd || boundaries.sundaySplitTime, "06:00"),
+        sundayEveningStart: validTimeOrDefault(boundaries.sundayEveningStart || boundaries.sundaySplitTime, "18:00"),
         publicHolidayEarlyEnd: validTimeOrDefault(boundaries.publicHolidayEarlyEnd, "06:00"),
         publicHolidayEveningStart: validTimeOrDefault(boundaries.publicHolidayEveningStart, "18:00")
       },
