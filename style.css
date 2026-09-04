@@ -420,7 +420,7 @@ button {
 
 .earnings-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.65fr);
+  grid-template-columns: 1fr;
   gap: 10px;
 }
 
@@ -532,7 +532,8 @@ button {
 
 .holiday-form {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(150px, 260px) auto;
+  justify-content: start;
   gap: 8px;
   padding: 10px;
   border-bottom: 1px solid var(--line);
@@ -546,6 +547,10 @@ button {
   padding: 7px 8px;
   border: 1px solid var(--soft-line);
   font-weight: 800;
+}
+
+.holiday-list {
+  max-width: 520px;
 }
 
 .month-grid {
