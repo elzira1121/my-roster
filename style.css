@@ -843,16 +843,6 @@ input[type="color"] {
   font-weight: 800;
 }
 
-.pay-rule em {
-  color: var(--muted);
-  font-size: 11px;
-  font-style: normal;
-  font-weight: 900;
-  letter-spacing: 0;
-  text-align: left;
-  text-transform: uppercase;
-}
-
 .time-stepper {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
