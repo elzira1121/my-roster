@@ -136,6 +136,7 @@
     renderColorPresets();
     bindEvents();
     bindPayTimeSteppers();
+    bindFinalRatePreviews();
     initFirebase();
     render();
   }
@@ -1033,6 +1034,29 @@
     els.publicHolidayBaseRate.value = String(pay.rates.publicHolidayBase);
     els.publicHolidayEarlyRate.value = String(pay.rates.publicHolidayEarly);
     els.publicHolidayEveningRate.value = String(pay.rates.publicHolidayEvening);
+    renderFinalHourlyRates();
+  }
+
+  function bindFinalRatePreviews() {
+    var inputs = [els.workplaceBaseRate].concat(Array.prototype.slice.call(document.querySelectorAll("[data-final-rate-source]")).map(function (output) {
+      return document.getElementById(output.dataset.finalRateSource);
+    }).filter(Boolean));
+
+    inputs.forEach(function (input) {
+      input.addEventListener("input", renderFinalHourlyRates);
+      input.addEventListener("change", renderFinalHourlyRates);
+    });
+
+    renderFinalHourlyRates();
+  }
+
+  function renderFinalHourlyRates() {
+    var baseRate = readNumberInput(els.workplaceBaseRate, 0);
+    document.querySelectorAll("[data-final-rate-source]").forEach(function (output) {
+      var source = document.getElementById(output.dataset.finalRateSource);
+      var multiplier = source ? readNumberInput(source, 0) : 0;
+      output.textContent = formatCurrency(baseRate * multiplier) + "/hr";
+    });
   }
 
   function bindPayTimeSteppers() {

@@ -159,7 +159,7 @@
           <h3>Weekday</h3>
           <div class="pay-rules">
             <div class="pay-rule pay-rule-head">
-              <span>Rule</span><b>Time</b><b>Rate</b>
+              <span>Rule</span><b>Time</b><b>Rate</b><b>Final $/hr</b>
             </div>
             <div class="pay-rule">
               <span>Before</span>
@@ -170,11 +170,13 @@
                 <input class="time-minute" type="number" min="0" max="59" step="1" value="00" aria-label="Minute" />
               </div>
               <input id="weekdayEarlyRate" type="number" min="0" step="0.01" value="1" aria-label="Weekday before rate" />
+              <span class="final-rate" data-final-rate-source="weekdayEarlyRate">$0.00/hr</span>
             </div>
             <div class="pay-rule">
               <span>Base</span>
               <span class="pay-rule-empty" aria-hidden="true"></span>
               <input id="weekdayBaseRate" type="number" min="0" step="0.01" value="1" aria-label="Weekday base rate" />
+              <span class="final-rate" data-final-rate-source="weekdayBaseRate">$0.00/hr</span>
             </div>
             <div class="pay-rule">
               <span>After</span>
@@ -185,6 +187,7 @@
                 <input class="time-minute" type="number" min="0" max="59" step="1" value="00" aria-label="Minute" />
               </div>
               <input id="weekdayEveningRate" type="number" min="0" step="0.01" value="1" aria-label="Weekday after rate" />
+              <span class="final-rate" data-final-rate-source="weekdayEveningRate">$0.00/hr</span>
             </div>
           </div>
         </div>
@@ -192,7 +195,7 @@
           <h3>Saturday</h3>
           <div class="pay-rules">
             <div class="pay-rule pay-rule-head">
-              <span>Rule</span><b>Time</b><b>Rate</b>
+              <span>Rule</span><b>Time</b><b>Rate</b><b>Final $/hr</b>
             </div>
             <div class="pay-rule">
               <span>Before</span>
@@ -203,11 +206,13 @@
                 <input class="time-minute" type="number" min="0" max="59" step="1" value="00" aria-label="Minute" />
               </div>
               <input id="saturdayEarlyRate" type="number" min="0" step="0.01" value="1" aria-label="Saturday before rate" />
+              <span class="final-rate" data-final-rate-source="saturdayEarlyRate">$0.00/hr</span>
             </div>
             <div class="pay-rule">
               <span>Base</span>
               <span class="pay-rule-empty" aria-hidden="true"></span>
               <input id="saturdayBaseRate" type="number" min="0" step="0.01" value="1" aria-label="Saturday base rate" />
+              <span class="final-rate" data-final-rate-source="saturdayBaseRate">$0.00/hr</span>
             </div>
             <div class="pay-rule">
               <span>After</span>
@@ -218,6 +223,7 @@
                 <input class="time-minute" type="number" min="0" max="59" step="1" value="00" aria-label="Minute" />
               </div>
               <input id="saturdayEveningRate" type="number" min="0" step="0.01" value="1" aria-label="Saturday after rate" />
+              <span class="final-rate" data-final-rate-source="saturdayEveningRate">$0.00/hr</span>
             </div>
           </div>
         </div>
@@ -225,7 +231,7 @@
           <h3>Sunday</h3>
           <div class="pay-rules">
             <div class="pay-rule pay-rule-head">
-              <span>Rule</span><b>Time</b><b>Rate</b>
+              <span>Rule</span><b>Time</b><b>Rate</b><b>Final $/hr</b>
             </div>
             <div class="pay-rule">
               <span>Before</span>
@@ -236,11 +242,13 @@
                 <input class="time-minute" type="number" min="0" max="59" step="1" value="00" aria-label="Minute" />
               </div>
               <input id="sundayEarlyRate" type="number" min="0" step="0.01" value="1" aria-label="Sunday before rate" />
+              <span class="final-rate" data-final-rate-source="sundayEarlyRate">$0.00/hr</span>
             </div>
             <div class="pay-rule">
               <span>Base</span>
               <span class="pay-rule-empty" aria-hidden="true"></span>
               <input id="sundayBaseRate" type="number" min="0" step="0.01" value="1" aria-label="Sunday base rate" />
+              <span class="final-rate" data-final-rate-source="sundayBaseRate">$0.00/hr</span>
             </div>
             <div class="pay-rule">
               <span>After</span>
@@ -251,6 +259,7 @@
                 <input class="time-minute" type="number" min="0" max="59" step="1" value="00" aria-label="Minute" />
               </div>
               <input id="sundayEveningRate" type="number" min="0" step="0.01" value="1" aria-label="Sunday after rate" />
+              <span class="final-rate" data-final-rate-source="sundayEveningRate">$0.00/hr</span>
             </div>
           </div>
         </div>
@@ -258,7 +267,7 @@
           <h3>Public Holiday</h3>
           <div class="pay-rules">
             <div class="pay-rule pay-rule-head">
-              <span>Rule</span><b>Time</b><b>Rate</b>
+              <span>Rule</span><b>Time</b><b>Rate</b><b>Final $/hr</b>
             </div>
             <div class="pay-rule">
               <span>Before</span>
@@ -269,11 +278,13 @@
                 <input class="time-minute" type="number" min="0" max="59" step="1" value="00" aria-label="Minute" />
               </div>
               <input id="publicHolidayEarlyRate" type="number" min="0" step="0.01" value="1" aria-label="Public holiday before rate" />
+              <span class="final-rate" data-final-rate-source="publicHolidayEarlyRate">$0.00/hr</span>
             </div>
             <div class="pay-rule">
               <span>Base</span>
               <span class="pay-rule-empty" aria-hidden="true"></span>
               <input id="publicHolidayBaseRate" type="number" min="0" step="0.01" value="1" aria-label="Public holiday base rate" />
+              <span class="final-rate" data-final-rate-source="publicHolidayBaseRate">$0.00/hr</span>
             </div>
             <div class="pay-rule">
               <span>After</span>
@@ -284,6 +295,7 @@
                 <input class="time-minute" type="number" min="0" max="59" step="1" value="00" aria-label="Minute" />
               </div>
               <input id="publicHolidayEveningRate" type="number" min="0" step="0.01" value="1" aria-label="Public holiday after rate" />
+              <span class="final-rate" data-final-rate-source="publicHolidayEveningRate">$0.00/hr</span>
             </div>
           </div>
         </div>

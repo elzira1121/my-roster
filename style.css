@@ -866,9 +866,9 @@ input[type="color"] {
 
 .pay-rule {
   display: grid;
-  grid-template-columns: 64px minmax(72px, 1fr) minmax(72px, 1fr);
+  grid-template-columns: 58px minmax(92px, 1fr) minmax(58px, 0.65fr) minmax(74px, 0.72fr);
   align-items: center;
-  gap: 7px;
+  gap: 6px;
 }
 
 .pay-rule span {
@@ -896,6 +896,20 @@ input[type="color"] {
   padding: 7px 8px;
   font-size: 13px;
   font-weight: 800;
+}
+
+.final-rate {
+  display: grid;
+  place-items: center;
+  min-height: 38px;
+  padding: 7px 6px;
+  border: 1px solid var(--soft-line);
+  border-radius: 6px;
+  background: #fff7f8;
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
 }
 
 .time-stepper {
@@ -1164,6 +1178,18 @@ input[type="color"] {
   }
 
   .pay-detail-row {
+    font-size: 11px;
+  }
+
+  .pay-rule {
+    grid-template-columns: 48px minmax(80px, 1fr) minmax(52px, 0.62fr) minmax(68px, 0.7fr);
+    gap: 5px;
+  }
+
+  .pay-rule input,
+  .time-stepper,
+  .final-rate {
+    min-height: 34px;
     font-size: 11px;
   }
 
