@@ -51,10 +51,44 @@ button {
 }
 
 .week-nav {
+  position: relative;
   display: grid;
-  grid-template-columns: 32px 1fr 32px;
+  grid-template-columns: 32px 32px 1fr 32px;
   align-items: center;
   gap: 6px;
+}
+
+.menu-btn {
+  font-size: 18px;
+}
+
+.page-menu {
+  position: absolute;
+  top: 38px;
+  left: 0;
+  z-index: 50;
+  display: grid;
+  min-width: 170px;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+}
+
+.page-menu button {
+  min-height: 36px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  font-weight: 800;
+}
+
+.page-menu button.active {
+  background: #fff0f3;
+  color: var(--red);
 }
 
 .week-title {
@@ -352,6 +386,118 @@ button {
   padding: 10px;
 }
 
+.earnings-view {
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+}
+
+.earnings-hero {
+  display: grid;
+  gap: 2px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff7f8;
+}
+
+.earnings-hero span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.earnings-hero strong {
+  font-size: clamp(22px, 3vw, 34px);
+  line-height: 1;
+}
+
+.earnings-hero b {
+  color: var(--red);
+  font-size: clamp(20px, 3vw, 34px);
+  line-height: 1;
+}
+
+.earnings-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.65fr);
+  gap: 10px;
+}
+
+.earnings-panel {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.panel-head h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.earnings-list,
+.holiday-list {
+  display: grid;
+  gap: 7px;
+  padding: 10px;
+}
+
+.earning-row {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px;
+  border: 1px solid var(--soft-line);
+}
+
+.earning-row strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.earning-row span {
+  color: var(--muted);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.earning-row b {
+  color: var(--red);
+  white-space: nowrap;
+}
+
+.holiday-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  padding: 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.holiday-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border: 1px solid var(--soft-line);
+  font-weight: 800;
+}
+
 .month-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -635,6 +781,16 @@ input[type="color"] {
   gap: 10px;
 }
 
+.rate-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 10px;
+}
+
+.rate-grid input {
+  min-height: 38px;
+}
+
 .form-error {
   min-height: 18px;
   margin: 0 0 10px;
@@ -718,10 +874,17 @@ input[type="color"] {
 }
 
 .workplace-name {
+  display: grid;
+  gap: 2px;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  font-weight: 800;
+}
+
+.workplace-name small {
+  color: var(--muted);
+  font-size: 11px;
   font-weight: 800;
 }
 
@@ -789,6 +952,14 @@ input[type="color"] {
     font-size: 16px;
   }
 
+  .week-nav {
+    grid-template-columns: 30px 30px 1fr 30px;
+  }
+
+  .page-menu {
+    top: 36px;
+  }
+
   .actions {
     grid-template-columns: 1fr 1.35fr 1fr;
     gap: 5px;
@@ -823,6 +994,26 @@ input[type="color"] {
     top: 118px;
     align-items: flex-start;
     font-size: 12px;
+  }
+
+  .earnings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .earnings-hero {
+    padding: 12px;
+  }
+
+  .earning-row {
+    grid-template-columns: 16px minmax(0, 1fr) auto;
+  }
+
+  .earning-row b {
+    grid-column: 2 / -1;
+  }
+
+  .rate-grid {
+    grid-template-columns: 1fr;
   }
 
   .time-header,

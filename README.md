@@ -2,7 +2,7 @@
 
 My Roster is a mobile-first weekly roster web app for planning personal work shifts. It is designed around a 7-day by 24-hour visual schedule, similar to an employee roster view, rather than a normal calendar or to-do list.
 
-The app runs entirely in the browser with HTML, CSS, and vanilla JavaScript. There is no login, backend, external calendar, or package dependency.
+The app runs in the browser with HTML, CSS, and vanilla JavaScript. It can work locally without login, and it can optionally sync data through Firebase when the user signs in.
 
 ## Features
 
@@ -19,6 +19,9 @@ The app runs entirely in the browser with HTML, CSS, and vanilla JavaScript. The
 - Workplace default colors, including common color presets and custom color picker
 - Weekly, monthly, and yearly hour totals
 - Workplace-level hour breakdowns
+- Pay / Earnings page calculated from saved shifts
+- Workplace base hourly rates and penalty multipliers
+- Weekly, monthly, and yearly estimated gross pay
 - Persistent browser storage with `localStorage`
 - Optional Firebase sync with email/password sign-in
 - Works by opening `index.html` directly
@@ -63,6 +66,8 @@ In **Manage Workplaces**, users can:
 - Delete a workplace
 - Choose a default color
 - Change the default color later
+- Set a base hourly rate
+- Set weekday, Saturday, Sunday, and public holiday pay multipliers
 
 When adding a shift, the workplace dropdown is populated from the user's saved workplaces.
 
@@ -79,6 +84,27 @@ Times use a 24-hour format. The time selector supports 5-minute steps.
 
 In the weekly view, each shift appears as a colored block. The color comes from the selected workplace's default color.
 
+## Pay / Earnings
+
+Open the top-left menu and choose **Pay / Earnings** to view estimated pay.
+
+The earnings page reads the existing shifts automatically. Users do not need to enter hours again.
+
+It shows:
+
+- Total hours for the current week, month, or year
+- Estimated gross pay for the selected period
+- A workplace-level breakdown with hours and pay
+- A public holiday list for dates that should use the public holiday multiplier
+
+Pay is estimated as:
+
+```text
+shift hours × workplace base hourly rate × matching penalty multiplier
+```
+
+Public holidays are entered manually for now. If a shift date is in the public holiday list, the public holiday multiplier is used before weekday, Saturday, or Sunday rates.
+
 ## Data Storage
 
 All data is stored locally in the browser using `localStorage`.
@@ -87,7 +113,9 @@ The app saves:
 
 - Workplaces
 - Workplace colors
+- Workplace pay settings
 - Shifts
+- Public holiday dates
 
 Data remains available after refreshing the page or closing and reopening the browser on the same device and browser profile.
 

@@ -10,6 +10,11 @@
   <main class="app-shell">
     <header class="topbar">
       <div class="week-nav" aria-label="Week navigation">
+        <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Open menu">☰</button>
+        <div class="page-menu hidden" id="pageMenu">
+          <button type="button" data-page="roster">Roster</button>
+          <button type="button" data-page="earnings">Pay / Earnings</button>
+        </div>
         <button class="icon-btn" id="previousPeriod" type="button" aria-label="Previous">‹</button>
         <div class="week-title" id="periodTitle">This Week</div>
         <button class="icon-btn" id="nextPeriod" type="button" aria-label="Next">›</button>
@@ -31,7 +36,7 @@
       </div>
     </header>
 
-    <section class="summary" aria-label="Weekly hours summary">
+    <section class="summary" id="summaryBar" aria-label="Weekly hours summary">
       <strong id="totalHours">Total: 0 h</strong>
       <div id="workplaceSummary" class="workplace-summary"></div>
     </section>
@@ -51,6 +56,33 @@
 
     <section class="period-view hidden" id="yearlyView" aria-label="Yearly roster">
       <div class="year-grid" id="yearGrid"></div>
+    </section>
+
+    <section class="earnings-view hidden" id="earningsView" aria-label="Pay and earnings">
+      <div class="earnings-hero">
+        <span id="earningsPeriodLabel">This Week</span>
+        <strong id="earningsHours">0 hours</strong>
+        <b id="earningsPay">$0.00</b>
+      </div>
+      <div class="earnings-grid">
+        <section class="earnings-panel">
+          <div class="panel-head">
+            <h2>By Workplace</h2>
+            <button class="secondary-btn" id="editPayRatesBtn" type="button">Pay Settings</button>
+          </div>
+          <div class="earnings-list" id="earningsBreakdown"></div>
+        </section>
+        <section class="earnings-panel">
+          <div class="panel-head">
+            <h2>Public Holidays</h2>
+          </div>
+          <form class="holiday-form" id="holidayForm">
+            <input id="holidayDate" type="date" aria-label="Public holiday date" />
+            <button class="secondary-btn" type="submit">Add</button>
+          </form>
+          <div class="holiday-list" id="holidayList"></div>
+        </section>
+      </div>
     </section>
   </main>
 
@@ -119,6 +151,28 @@
           <div class="color-presets" id="colorPresets" aria-label="Preset workplace colors"></div>
           <input id="workplaceColor" type="color" value="#ed0027" />
         </label>
+        <label>
+          Base Hourly Rate
+          <input id="workplaceBaseRate" type="number" min="0" step="0.01" placeholder="e.g. 28.50" />
+        </label>
+        <div class="rate-grid">
+          <label>
+            Weekday Rate
+            <input id="weekdayRate" type="number" min="0" step="0.01" value="1" />
+          </label>
+          <label>
+            Saturday Rate
+            <input id="saturdayRate" type="number" min="0" step="0.01" value="1" />
+          </label>
+          <label>
+            Sunday Rate
+            <input id="sundayRate" type="number" min="0" step="0.01" value="1" />
+          </label>
+          <label>
+            Public Holiday Rate
+            <input id="publicHolidayRate" type="number" min="0" step="0.01" value="1" />
+          </label>
+        </div>
         <p class="form-error" id="workplaceError" role="alert"></p>
         <div class="modal-actions">
           <button class="secondary-btn" id="cancelWorkplaceEdit" type="button">Clear</button>

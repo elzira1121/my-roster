@@ -21,6 +21,7 @@
     "#e0008a"
   ];
   var state = loadState();
+  var activePage = loadActivePage();
   var activeView = loadActiveView();
   var selectedDate = new Date();
   var cloud = {
@@ -37,6 +38,8 @@
 
   var els = {
     periodTitle: document.getElementById("periodTitle"),
+    menuBtn: document.getElementById("menuBtn"),
+    pageMenu: document.getElementById("pageMenu"),
     previousPeriod: document.getElementById("previousPeriod"),
     nextPeriod: document.getElementById("nextPeriod"),
     todayBtn: document.getElementById("todayBtn"),
@@ -54,6 +57,16 @@
     timeBoard: document.getElementById("timeBoard"),
     monthGrid: document.getElementById("monthGrid"),
     yearGrid: document.getElementById("yearGrid"),
+    earningsView: document.getElementById("earningsView"),
+    earningsPeriodLabel: document.getElementById("earningsPeriodLabel"),
+    earningsHours: document.getElementById("earningsHours"),
+    earningsPay: document.getElementById("earningsPay"),
+    earningsBreakdown: document.getElementById("earningsBreakdown"),
+    editPayRatesBtn: document.getElementById("editPayRatesBtn"),
+    holidayForm: document.getElementById("holidayForm"),
+    holidayDate: document.getElementById("holidayDate"),
+    holidayList: document.getElementById("holidayList"),
+    summaryBar: document.getElementById("summaryBar"),
     totalHours: document.getElementById("totalHours"),
     workplaceSummary: document.getElementById("workplaceSummary"),
     shiftModal: document.getElementById("shiftModal"),
@@ -78,6 +91,11 @@
     workplaceId: document.getElementById("workplaceId"),
     workplaceName: document.getElementById("workplaceName"),
     workplaceColor: document.getElementById("workplaceColor"),
+    workplaceBaseRate: document.getElementById("workplaceBaseRate"),
+    weekdayRate: document.getElementById("weekdayRate"),
+    saturdayRate: document.getElementById("saturdayRate"),
+    sundayRate: document.getElementById("sundayRate"),
+    publicHolidayRate: document.getElementById("publicHolidayRate"),
     colorPresets: document.getElementById("colorPresets"),
     workplaceError: document.getElementById("workplaceError"),
     workplaceList: document.getElementById("workplaceList"),
@@ -106,6 +124,24 @@
   }
 
   function bindEvents() {
+    els.menuBtn.addEventListener("click", function (event) {
+      event.stopPropagation();
+      els.pageMenu.classList.toggle("hidden");
+    });
+
+    els.pageMenu.querySelectorAll("button").forEach(function (button) {
+      button.addEventListener("click", function () {
+        activePage = button.dataset.page;
+        saveActivePage();
+        els.pageMenu.classList.add("hidden");
+        render();
+      });
+    });
+
+    document.addEventListener("click", function () {
+      els.pageMenu.classList.add("hidden");
+    });
+
     els.previousPeriod.addEventListener("click", function () {
       movePeriod(-1);
     });
@@ -152,6 +188,12 @@
       openWorkplaceModal();
     });
 
+    els.editPayRatesBtn.addEventListener("click", function () {
+      openWorkplaceModal();
+    });
+
+    els.holidayForm.addEventListener("submit", saveHolidayFromForm);
+
     els.openWorkplacesFromShift.addEventListener("click", function () {
       closeModal("shiftModal");
       openWorkplaceModal();
@@ -180,18 +222,29 @@
   }
 
   function render() {
+    renderPageMenu();
     renderViewTabs();
     renderTitle();
     renderSummary();
     renderSyncUI();
     renderWorkplaceSelect();
-    els.weeklyView.classList.toggle("hidden", activeView !== "weekly");
-    els.monthlyView.classList.toggle("hidden", activeView !== "monthly");
-    els.yearlyView.classList.toggle("hidden", activeView !== "yearly");
+    var showingRoster = activePage === "roster";
+    els.summaryBar.classList.toggle("hidden", !showingRoster);
+    els.weeklyView.classList.toggle("hidden", !showingRoster || activeView !== "weekly");
+    els.monthlyView.classList.toggle("hidden", !showingRoster || activeView !== "monthly");
+    els.yearlyView.classList.toggle("hidden", !showingRoster || activeView !== "yearly");
+    els.earningsView.classList.toggle("hidden", activePage !== "earnings");
 
-    if (activeView === "weekly") renderWeekly();
-    if (activeView === "monthly") renderMonthly();
-    if (activeView === "yearly") renderYearly();
+    if (showingRoster && activeView === "weekly") renderWeekly();
+    if (showingRoster && activeView === "monthly") renderMonthly();
+    if (showingRoster && activeView === "yearly") renderYearly();
+    if (activePage === "earnings") renderEarnings();
+  }
+
+  function renderPageMenu() {
+    els.pageMenu.querySelectorAll("button").forEach(function (button) {
+      button.classList.toggle("active", button.dataset.page === activePage);
+    });
   }
 
   function renderViewTabs() {
@@ -429,6 +482,40 @@
     els.signOutBtn.classList.toggle("hidden", !cloud.user);
   }
 
+  function renderEarnings() {
+    var range = getActiveRange();
+    var shifts = getShiftsInRange(range.start, range.end);
+    var earnings = getEarningsTotals(shifts);
+    var label = activeView === "weekly" ? "This Week" : activeView === "monthly" ? selectedDate.toLocaleString("en", { month: "long" }) + " estimated gross pay" : "Yearly Earnings";
+
+    els.earningsPeriodLabel.textContent = activeView === "yearly" ? label + " " + selectedDate.getFullYear() : label;
+    els.earningsHours.textContent = formatHours(earnings.hours) + " hours";
+    els.earningsPay.textContent = "Estimated gross pay: " + formatCurrency(earnings.pay);
+    els.earningsBreakdown.innerHTML = "";
+
+    if (Object.keys(earnings.byWorkplace).length === 0) {
+      var empty = document.createElement("p");
+      empty.className = "empty-note";
+      empty.textContent = "No shifts in this period.";
+      els.earningsBreakdown.appendChild(empty);
+    } else {
+      Object.keys(earnings.byWorkplace).forEach(function (id) {
+        var workplace = getWorkplace(id);
+        var item = earnings.byWorkplace[id];
+        var row = document.createElement("div");
+        row.className = "earning-row";
+        row.innerHTML =
+          '<span class="swatch" style="background:' + escapeHTML(workplace ? workplace.color : "#7a7f86") + '"></span>' +
+          '<strong>' + escapeHTML(workplace ? workplace.name : "Deleted workplace") + '</strong>' +
+          '<span>' + escapeHTML(formatHours(item.hours)) + ' h</span>' +
+          '<b>' + escapeHTML(formatCurrency(item.pay)) + '</b>';
+        els.earningsBreakdown.appendChild(row);
+      });
+    }
+
+    renderHolidayList();
+  }
+
   function initFirebase() {
     var config = window.MY_ROSTER_FIREBASE_CONFIG;
     if (!isFirebaseConfigured(config) || !window.firebase) {
@@ -482,7 +569,7 @@
         var data = snapshot.data();
         if (Array.isArray(data.workplaces) && Array.isArray(data.shifts)) {
           cloud.isApplyingRemote = true;
-          state = { workplaces: data.workplaces, shifts: data.shifts };
+          state = normalizeState(data);
           saveLocalState();
           cloud.isApplyingRemote = false;
           cloud.status = "Synced";
@@ -752,6 +839,7 @@
     var id = els.workplaceId.value;
     var name = els.workplaceName.value.trim();
     var color = els.workplaceColor.value;
+    var pay = readPaySettingsFromForm();
     els.workplaceError.textContent = "";
 
     if (!name) {
@@ -769,10 +857,10 @@
 
     if (id) {
       state.workplaces = state.workplaces.map(function (workplace) {
-        return workplace.id === id ? { id: id, name: name, color: color } : workplace;
+        return workplace.id === id ? Object.assign({}, workplace, { id: id, name: name, color: color, pay: pay }) : workplace;
       });
     } else {
-      state.workplaces.push({ id: createId(), name: name, color: color });
+      state.workplaces.push({ id: createId(), name: name, color: color, pay: pay });
     }
 
     saveState();
@@ -795,15 +883,17 @@
     state.workplaces.forEach(function (workplace) {
       var row = document.createElement("div");
       row.className = "workplace-row";
+      var pay = getPaySettings(workplace);
       row.innerHTML =
         '<span class="swatch" style="background:' + escapeHTML(workplace.color) + '"></span>' +
-        '<span class="workplace-name">' + escapeHTML(workplace.name) + '</span>' +
+        '<span class="workplace-name">' + escapeHTML(workplace.name) + '<small>' + escapeHTML(formatCurrency(pay.baseRate)) + '/hr</small></span>' +
         '<button class="mini-btn" type="button">Edit</button>' +
         '<button class="mini-btn" type="button">Delete</button>';
       row.children[2].addEventListener("click", function () {
         els.workplaceId.value = workplace.id;
         els.workplaceName.value = workplace.name;
         els.workplaceColor.value = workplace.color;
+        setPaySettingsForm(workplace);
         renderColorPresetSelection();
         els.workplaceName.focus();
       });
@@ -831,8 +921,35 @@
     els.workplaceId.value = "";
     els.workplaceName.value = "";
     els.workplaceColor.value = presetColors[0];
+    setPaySettingsForm();
     els.workplaceError.textContent = "";
     renderColorPresetSelection();
+  }
+
+  function readPaySettingsFromForm() {
+    return {
+      baseRate: readNumberInput(els.workplaceBaseRate, 0),
+      rates: {
+        weekday: readNumberInput(els.weekdayRate, 1),
+        saturday: readNumberInput(els.saturdayRate, 1),
+        sunday: readNumberInput(els.sundayRate, 1),
+        publicHoliday: readNumberInput(els.publicHolidayRate, 1)
+      }
+    };
+  }
+
+  function setPaySettingsForm(workplace) {
+    var pay = getPaySettings(workplace || {});
+    els.workplaceBaseRate.value = pay.baseRate ? String(pay.baseRate) : "";
+    els.weekdayRate.value = String(pay.rates.weekday);
+    els.saturdayRate.value = String(pay.rates.saturday);
+    els.sundayRate.value = String(pay.rates.sunday);
+    els.publicHolidayRate.value = String(pay.rates.publicHoliday);
+  }
+
+  function readNumberInput(input, fallback) {
+    var value = Number(input.value);
+    return Number.isFinite(value) && value >= 0 ? value : fallback;
   }
 
   function renderColorPresets() {
@@ -866,6 +983,47 @@
       option.value = workplace.id;
       option.textContent = workplace.name;
       els.shiftWorkplace.appendChild(option);
+    });
+  }
+
+  function saveHolidayFromForm(event) {
+    event.preventDefault();
+    var date = els.holidayDate.value;
+    if (!date) return;
+    if (state.publicHolidays.indexOf(date) < 0) {
+      state.publicHolidays.push(date);
+      state.publicHolidays.sort();
+      saveState();
+    }
+    els.holidayDate.value = "";
+    render();
+  }
+
+  function renderHolidayList() {
+    els.holidayList.innerHTML = "";
+
+    if (state.publicHolidays.length === 0) {
+      var empty = document.createElement("p");
+      empty.className = "empty-note";
+      empty.textContent = "No public holidays added.";
+      els.holidayList.appendChild(empty);
+      return;
+    }
+
+    state.publicHolidays.forEach(function (date) {
+      var row = document.createElement("div");
+      row.className = "holiday-row";
+      row.innerHTML =
+        '<span>' + escapeHTML(formatDisplayDate(parseISODate(date))) + '</span>' +
+        '<button class="mini-btn" type="button">Delete</button>';
+      row.querySelector("button").addEventListener("click", function () {
+        state.publicHolidays = state.publicHolidays.filter(function (item) {
+          return item !== date;
+        });
+        saveState();
+        render();
+      });
+      els.holidayList.appendChild(row);
     });
   }
 
@@ -935,6 +1093,50 @@
     return totals;
   }
 
+  function getEarningsTotals(shifts) {
+    var totals = { hours: 0, pay: 0, byWorkplace: {} };
+    shifts.forEach(function (shift) {
+      var workplace = getWorkplace(shift.workplaceId);
+      var paySettings = getPaySettings(workplace || {});
+      var hours = (timeToMinutes(shift.end) - timeToMinutes(shift.start)) / 60;
+      if (hours <= 0) return;
+
+      var multiplier = getShiftMultiplier(shift, paySettings);
+      var pay = hours * paySettings.baseRate * multiplier;
+      totals.hours += hours;
+      totals.pay += pay;
+
+      if (!totals.byWorkplace[shift.workplaceId]) {
+        totals.byWorkplace[shift.workplaceId] = { hours: 0, pay: 0 };
+      }
+      totals.byWorkplace[shift.workplaceId].hours += hours;
+      totals.byWorkplace[shift.workplaceId].pay += pay;
+    });
+    return totals;
+  }
+
+  function getPaySettings(workplace) {
+    var pay = workplace && workplace.pay ? workplace.pay : {};
+    var rates = pay.rates || {};
+    return {
+      baseRate: Number(pay.baseRate) || 0,
+      rates: {
+        weekday: Number(rates.weekday) || 1,
+        saturday: Number(rates.saturday) || 1,
+        sunday: Number(rates.sunday) || 1,
+        publicHoliday: Number(rates.publicHoliday) || 1
+      }
+    };
+  }
+
+  function getShiftMultiplier(shift, paySettings) {
+    if (state.publicHolidays.indexOf(shift.date) >= 0) return paySettings.rates.publicHoliday;
+    var day = parseISODate(shift.date).getDay();
+    if (day === 6) return paySettings.rates.saturday;
+    if (day === 0) return paySettings.rates.sunday;
+    return paySettings.rates.weekday;
+  }
+
   function getWorkplace(id) {
     return state.workplaces.find(function (workplace) {
       return workplace.id === id;
@@ -973,6 +1175,14 @@
 
   function formatHours(hours) {
     return Number.isInteger(hours) ? String(hours) : hours.toFixed(1);
+  }
+
+  function formatCurrency(amount) {
+    return "$" + (Number(amount) || 0).toFixed(2);
+  }
+
+  function formatDisplayDate(date) {
+    return date.getDate() + " " + date.toLocaleString("en", { month: "short", year: "numeric" });
   }
 
   function startOfWeek(date) {
@@ -1023,12 +1233,26 @@
     try {
       var parsed = JSON.parse(localStorage.getItem(STORAGE_KEY));
       if (parsed && Array.isArray(parsed.workplaces) && Array.isArray(parsed.shifts)) {
-        return parsed;
+        return normalizeState(parsed);
       }
     } catch (error) {
-      return { workplaces: [], shifts: [] };
+      return normalizeState({});
     }
-    return { workplaces: [], shifts: [] };
+    return normalizeState({});
+  }
+
+  function normalizeState(data) {
+    return {
+      workplaces: Array.isArray(data.workplaces) ? data.workplaces.map(normalizeWorkplace) : [],
+      shifts: Array.isArray(data.shifts) ? data.shifts : [],
+      publicHolidays: Array.isArray(data.publicHolidays) ? data.publicHolidays : []
+    };
+  }
+
+  function normalizeWorkplace(workplace) {
+    return Object.assign({}, workplace, {
+      pay: getPaySettings(workplace)
+    });
   }
 
   function loadActiveView() {
@@ -1038,6 +1262,15 @@
 
   function saveActiveView() {
     localStorage.setItem(UI_STORAGE_KEY, activeView);
+  }
+
+  function loadActivePage() {
+    var storedPage = localStorage.getItem(UI_STORAGE_KEY + ".page");
+    return ["roster", "earnings"].indexOf(storedPage) >= 0 ? storedPage : "roster";
+  }
+
+  function saveActivePage() {
+    localStorage.setItem(UI_STORAGE_KEY + ".page", activePage);
   }
 
   function saveState() {
@@ -1062,6 +1295,7 @@
     cloud.docRef.set({
       workplaces: state.workplaces,
       shifts: state.shifts,
+      publicHolidays: state.publicHolidays,
       updatedAt: window.firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true }).then(function () {
       cloud.status = "Synced";
