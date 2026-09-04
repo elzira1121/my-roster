@@ -65,6 +65,7 @@
     editPayRatesBtn: document.getElementById("editPayRatesBtn"),
     holidayForm: document.getElementById("holidayForm"),
     holidayDate: document.getElementById("holidayDate"),
+    holidayNote: document.getElementById("holidayNote"),
     holidayList: document.getElementById("holidayList"),
     summaryBar: document.getElementById("summaryBar"),
     totalHours: document.getElementById("totalHours"),
@@ -1194,13 +1195,20 @@
   function saveHolidayFromForm(event) {
     event.preventDefault();
     var date = els.holidayDate.value;
+    var note = els.holidayNote.value.trim();
     if (!date) return;
-    if (state.publicHolidays.indexOf(date) < 0) {
-      state.publicHolidays.push(date);
-      state.publicHolidays.sort();
-      saveState();
+    var existing = state.publicHolidays.find(function (holiday) {
+      return holiday.date === date;
+    });
+    if (existing) {
+      existing.note = note;
+    } else {
+      state.publicHolidays.push({ date: date, note: note });
     }
+    sortPublicHolidays();
+    saveState();
     els.holidayDate.value = "";
+    els.holidayNote.value = "";
     render();
   }
 
@@ -1215,15 +1223,22 @@
       return;
     }
 
-    state.publicHolidays.forEach(function (date) {
+    state.publicHolidays.forEach(function (holiday) {
       var row = document.createElement("div");
       row.className = "holiday-row";
       row.innerHTML =
-        '<span>' + escapeHTML(formatDisplayDate(parseISODate(date))) + '</span>' +
+        '<div class="holiday-main">' +
+          '<strong>' + escapeHTML(formatDisplayDate(parseISODate(holiday.date))) + '</strong>' +
+          '<input type="text" maxlength="48" value="' + escapeHTML(holiday.note || "") + '" placeholder="Add note" aria-label="Note for ' + escapeHTML(formatDisplayDate(parseISODate(holiday.date))) + '" />' +
+        '</div>' +
         '<button class="mini-btn" type="button">Delete</button>';
+      row.querySelector("input").addEventListener("input", function (event) {
+        holiday.note = event.target.value.trim();
+        saveState();
+      });
       row.querySelector("button").addEventListener("click", function () {
         state.publicHolidays = state.publicHolidays.filter(function (item) {
-          return item !== date;
+          return item.date !== holiday.date;
         });
         saveState();
         render();
@@ -1372,7 +1387,7 @@
     var start = timeToMinutes(shift.start);
     var end = timeToMinutes(shift.end);
     if (end <= start) return [];
-    if (state.publicHolidays.indexOf(shift.date) >= 0) {
+    if (isPublicHoliday(shift.date)) {
       return splitShiftByRules(start, end, getPublicHolidayPayRules(paySettings));
     }
 
@@ -1572,13 +1587,42 @@
     return {
       workplaces: Array.isArray(data.workplaces) ? data.workplaces.map(normalizeWorkplace) : [],
       shifts: Array.isArray(data.shifts) ? data.shifts : [],
-      publicHolidays: Array.isArray(data.publicHolidays) ? data.publicHolidays : []
+      publicHolidays: normalizePublicHolidays(data.publicHolidays)
     };
   }
 
   function normalizeWorkplace(workplace) {
     return Object.assign({}, workplace, {
       pay: getPaySettings(workplace)
+    });
+  }
+
+  function normalizePublicHolidays(holidays) {
+    if (!Array.isArray(holidays)) return [];
+    return holidays.map(function (holiday) {
+      if (typeof holiday === "string") {
+        return { date: holiday, note: "" };
+      }
+      return {
+        date: typeof holiday.date === "string" ? holiday.date : "",
+        note: typeof holiday.note === "string" ? holiday.note : ""
+      };
+    }).filter(function (holiday) {
+      return /^\d{4}-\d{2}-\d{2}$/.test(holiday.date);
+    }).sort(function (a, b) {
+      return a.date.localeCompare(b.date);
+    });
+  }
+
+  function sortPublicHolidays() {
+    state.publicHolidays.sort(function (a, b) {
+      return a.date.localeCompare(b.date);
+    });
+  }
+
+  function isPublicHoliday(date) {
+    return state.publicHolidays.some(function (holiday) {
+      return holiday.date === date;
     });
   }
 

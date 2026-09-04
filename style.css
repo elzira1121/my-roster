@@ -532,11 +532,16 @@ button {
 
 .holiday-form {
   display: grid;
-  grid-template-columns: minmax(150px, 260px) auto;
-  justify-content: start;
+  grid-template-columns: minmax(150px, 220px) minmax(180px, 1fr) auto;
+  align-items: stretch;
   gap: 8px;
   padding: 10px;
   border-bottom: 1px solid var(--line);
+}
+
+.holiday-form input,
+.holiday-form button {
+  min-height: 42px;
 }
 
 .holiday-row {
@@ -544,13 +549,34 @@ button {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 8px;
-  padding: 7px 8px;
+  min-height: 50px;
+  padding: 8px;
   border: 1px solid var(--soft-line);
   font-weight: 800;
 }
 
 .holiday-list {
-  max-width: 520px;
+  max-width: 760px;
+}
+
+.holiday-main {
+  display: grid;
+  grid-template-columns: minmax(120px, auto) minmax(160px, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.holiday-main strong {
+  white-space: nowrap;
+}
+
+.holiday-main input {
+  min-width: 0;
+  min-height: 36px;
+  padding: 6px 8px;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .month-grid {
@@ -1200,6 +1226,20 @@ input[type="color"] {
   .final-rate {
     min-height: 34px;
     font-size: 11px;
+  }
+
+  .holiday-form {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .holiday-form input[type="text"] {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .holiday-main {
+    grid-template-columns: 1fr;
+    gap: 5px;
   }
 
   .rate-grid {
