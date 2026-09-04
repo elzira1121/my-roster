@@ -499,8 +499,8 @@ button {
 .year-day.today {
   border-color: var(--red);
   border-radius: 6px;
-  background: #fff;
-  color: var(--red);
+  background: #fff !important;
+  color: var(--red) !important;
 }
 
 .year-day.has-shift {
@@ -509,12 +509,14 @@ button {
 
 .year-day.outside.has-shift {
   background: #f2f2f2 !important;
-  color: #b7bcc2;
+  color: #b7bcc2 !important;
 }
 
 .year-day.has-shift.today {
   border-color: var(--red);
   border-radius: 6px;
+  background: #fff !important;
+  color: var(--red) !important;
   box-shadow: none;
 }
 
