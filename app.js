@@ -520,17 +520,47 @@
         var workplace = getWorkplace(id);
         var item = earnings.byWorkplace[id];
         var row = document.createElement("div");
-        row.className = "earning-row";
+        row.className = "earning-card";
         row.innerHTML =
-          '<span class="swatch" style="background:' + escapeHTML(workplace ? workplace.color : "#7a7f86") + '"></span>' +
-          '<strong>' + escapeHTML(workplace ? workplace.name : "Deleted workplace") + '</strong>' +
-          '<span>' + escapeHTML(formatHours(item.hours)) + ' h</span>' +
-          '<b>' + escapeHTML(formatCurrency(item.pay)) + '</b>';
+          '<div class="earning-total">' +
+            '<span class="swatch" style="background:' + escapeHTML(workplace ? workplace.color : "#7a7f86") + '"></span>' +
+            '<strong>' + escapeHTML(workplace ? workplace.name : "Deleted workplace") + '</strong>' +
+            '<span>' + escapeHTML(formatHours(item.hours)) + ' h</span>' +
+            '<b>' + escapeHTML(formatCurrency(item.pay)) + '</b>' +
+          '</div>' +
+          '<div class="pay-detail-title">Hours &amp; Earnings</div>' +
+          '<div class="pay-detail-head"><span>Description</span><span>Hours</span><span>Rate</span><span>Begin</span><span>End</span><span>Earnings</span></div>' +
+          renderPayDetailRows(item.details, range);
         els.earningsBreakdown.appendChild(row);
       });
     }
 
     renderHolidayList();
+  }
+
+  function renderPayDetailRows(details, range) {
+    var begin = formatPayslipDate(parseISODate(range.start));
+    var end = formatPayslipDate(parseISODate(range.end));
+    return Object.keys(details).map(function (key) {
+      return details[key];
+    }).sort(function (a, b) {
+      return a.multiplier - b.multiplier;
+    }).map(function (detail) {
+      return (
+        '<div class="pay-detail-row">' +
+          '<span>' + escapeHTML(detail.description) + '</span>' +
+          '<span>' + escapeHTML(formatHours(detail.hours)) + ' h</span>' +
+          '<span>' + escapeHTML(formatCurrency(detail.rate)) + '/hr</span>' +
+          '<span>' + escapeHTML(begin) + '</span>' +
+          '<span>' + escapeHTML(end) + '</span>' +
+          '<b>' + escapeHTML(formatCurrency(detail.pay)) + '</b>' +
+        '</div>'
+      );
+    }).join("");
+  }
+
+  function getPayDetailDescription(multiplier) {
+    return multiplier === 1 ? "Ordinary 1.0" : "Penalty " + formatMultiplier(multiplier);
   }
 
   function initFirebase() {
@@ -1252,14 +1282,27 @@
       getPaySegmentsForShift(shift, paySettings).forEach(function (segment) {
         var hours = segment.minutes / 60;
         var pay = hours * paySettings.baseRate * segment.multiplier;
+        var detailKey = String(segment.multiplier);
         totals.hours += hours;
         totals.pay += pay;
 
         if (!totals.byWorkplace[shift.workplaceId]) {
-          totals.byWorkplace[shift.workplaceId] = { hours: 0, pay: 0 };
+          totals.byWorkplace[shift.workplaceId] = { hours: 0, pay: 0, details: {} };
         }
         totals.byWorkplace[shift.workplaceId].hours += hours;
         totals.byWorkplace[shift.workplaceId].pay += pay;
+
+        if (!totals.byWorkplace[shift.workplaceId].details[detailKey]) {
+          totals.byWorkplace[shift.workplaceId].details[detailKey] = {
+            multiplier: segment.multiplier,
+            description: getPayDetailDescription(segment.multiplier),
+            hours: 0,
+            rate: paySettings.baseRate * segment.multiplier,
+            pay: 0
+          };
+        }
+        totals.byWorkplace[shift.workplaceId].details[detailKey].hours += hours;
+        totals.byWorkplace[shift.workplaceId].details[detailKey].pay += pay;
       });
     });
     return totals;
@@ -1430,6 +1473,15 @@
 
   function formatCurrency(amount) {
     return "$" + (Number(amount) || 0).toFixed(2);
+  }
+
+  function formatMultiplier(multiplier) {
+    var rounded = Math.round((Number(multiplier) || 0) * 100) / 100;
+    return rounded.toFixed(2).replace(/\.?0+$/, "");
+  }
+
+  function formatPayslipDate(date) {
+    return pad(date.getDate()) + "." + pad(date.getMonth() + 1) + "." + date.getFullYear();
   }
 
   function formatDisplayDate(date) {

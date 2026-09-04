@@ -452,32 +452,82 @@ button {
   padding: 10px;
 }
 
-.earning-row {
+.earning-card {
+  border: 1px solid var(--soft-line);
+  background: #fff;
+}
+
+.earning-total {
   display: grid;
   grid-template-columns: 18px minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 8px;
   min-height: 38px;
   padding: 8px;
-  border: 1px solid var(--soft-line);
+  border-bottom: 1px solid var(--soft-line);
 }
 
-.earning-row strong {
+.earning-total strong {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.earning-row span {
+.earning-total span {
   color: var(--muted);
   font-weight: 800;
   white-space: nowrap;
 }
 
-.earning-row b {
+.earning-total b {
   color: var(--red);
   white-space: nowrap;
+}
+
+.pay-detail-title {
+  padding: 8px 8px 0;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.pay-detail-head,
+.pay-detail-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) 0.55fr 0.8fr 0.95fr 0.95fr 0.85fr;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 8px;
+}
+
+.pay-detail-head {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.pay-detail-row {
+  min-height: 30px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.pay-detail-row:nth-child(even) {
+  background: #f4f4f4;
+}
+
+.pay-detail-row span,
+.pay-detail-row b {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pay-detail-row b {
+  color: var(--red);
+  text-align: right;
 }
 
 .holiday-form {
@@ -1088,12 +1138,28 @@ input[type="color"] {
     padding: 12px;
   }
 
-  .earning-row {
-    grid-template-columns: 16px minmax(0, 1fr) auto;
+  .earning-total {
+    grid-template-columns: 16px minmax(0, 1fr) auto auto;
+    gap: 6px;
   }
 
-  .earning-row b {
-    grid-column: 2 / -1;
+  .pay-detail-head,
+  .pay-detail-row {
+    grid-template-columns: minmax(0, 1.35fr) 0.55fr 0.8fr 0.8fr;
+    gap: 4px;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  .pay-detail-head span:nth-child(4),
+  .pay-detail-head span:nth-child(5),
+  .pay-detail-row span:nth-child(4),
+  .pay-detail-row span:nth-child(5) {
+    display: none;
+  }
+
+  .pay-detail-row {
+    font-size: 11px;
   }
 
   .rate-grid {
