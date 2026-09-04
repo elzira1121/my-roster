@@ -571,12 +571,14 @@ button {
   white-space: nowrap;
 }
 
-.holiday-main input {
+.holiday-main span {
   min-width: 0;
-  min-height: 36px;
-  padding: 6px 8px;
+  overflow: hidden;
+  color: var(--muted);
   font-size: 13px;
   font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .month-grid {

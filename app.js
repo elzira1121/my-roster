@@ -1229,13 +1229,9 @@
       row.innerHTML =
         '<div class="holiday-main">' +
           '<strong>' + escapeHTML(formatDisplayDate(parseISODate(holiday.date))) + '</strong>' +
-          '<input type="text" maxlength="48" value="' + escapeHTML(holiday.note || "") + '" placeholder="Add note" aria-label="Note for ' + escapeHTML(formatDisplayDate(parseISODate(holiday.date))) + '" />' +
+          '<span>' + escapeHTML(holiday.note || "") + '</span>' +
         '</div>' +
         '<button class="mini-btn" type="button">Delete</button>';
-      row.querySelector("input").addEventListener("input", function (event) {
-        holiday.note = event.target.value.trim();
-        saveState();
-      });
       row.querySelector("button").addEventListener("click", function () {
         state.publicHolidays = state.publicHolidays.filter(function (item) {
           return item.date !== holiday.date;
