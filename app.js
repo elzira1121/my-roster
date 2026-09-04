@@ -354,12 +354,13 @@
         day.classList.add("has-shift");
         day.style.backgroundColor = workplace ? workplace.color : "#7a7f86";
         day.title = shifts.length + " shift" + (shifts.length === 1 ? "" : "s");
-        day.addEventListener("click", function (targetDate) {
-          return function () {
-            openDayPreview(targetDate);
-          };
-        }(dateString));
       }
+
+      day.addEventListener("click", function (targetDate) {
+        return function () {
+          openDayPreview(targetDate);
+        };
+      }(dateString));
 
       days.appendChild(day);
     }

@@ -390,20 +390,29 @@ button {
   background: #fff5f6;
 }
 
+.month-day.outside.today {
+  background: #fafafa;
+}
+
 .month-date {
   display: inline-grid;
   place-items: center;
   min-width: 24px;
   min-height: 24px;
   margin-bottom: 5px;
-  border-radius: 50%;
+  border: 2px solid transparent;
+  border-radius: 6px;
   font-size: clamp(14px, 1.5vw, 18px);
   font-weight: 900;
 }
 
 .month-day.today .month-date {
-  background: var(--red);
-  color: #fff;
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.month-day.outside .month-date {
+  color: #b6bcc2;
 }
 
 .mini-shift {
@@ -466,36 +475,47 @@ button {
 }
 
 .year-day {
+  display: grid;
+  place-items: center;
   width: clamp(16px, 1.45vw, 20px);
   height: clamp(16px, 1.45vw, 20px);
   min-height: clamp(16px, 1.45vw, 20px);
   justify-self: center;
   padding: 0;
-  border: 0;
+  border: 2px solid transparent;
   border-radius: 50%;
   background: transparent;
   color: #303030;
   text-align: center;
   font-size: clamp(10px, 0.95vw, 13px);
-  line-height: clamp(16px, 1.45vw, 20px);
+  line-height: 1;
   font-weight: 800;
 }
 
 .year-day.outside {
-  color: #bfbfbf;
+  color: #c9c9c9;
 }
 
 .year-day.today {
-  background: #ff3b3b;
-  color: #fff;
+  border-color: var(--red);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--red);
 }
 
 .year-day.has-shift {
   color: #fff;
 }
 
+.year-day.outside.has-shift {
+  background: #f2f2f2 !important;
+  color: #b7bcc2;
+}
+
 .year-day.has-shift.today {
-  box-shadow: 0 0 0 3px rgba(255, 59, 59, 0.22);
+  border-color: var(--red);
+  border-radius: 6px;
+  box-shadow: none;
 }
 
 .modal-backdrop {
@@ -895,7 +915,7 @@ input[type="color"] {
     height: 16px;
     min-height: 16px;
     font-size: 10px;
-    line-height: 16px;
+    line-height: 1;
   }
 
   .time-combo {
