@@ -81,7 +81,10 @@ button {
   grid-template-columns: 42px minmax(0, auto) 42px;
   align-items: center;
   justify-content: center;
+  justify-self: center;
   gap: 12px;
+  width: max-content;
+  max-width: 100%;
   min-width: 0;
 }
 
