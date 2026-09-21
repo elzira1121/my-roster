@@ -78,13 +78,11 @@ button {
 
 .period-nav {
   display: grid;
-  grid-template-columns: 42px minmax(0, auto) 42px;
+  grid-template-columns: 42px minmax(0, 1fr) 42px;
   align-items: center;
   justify-content: center;
-  justify-self: center;
   gap: 12px;
-  width: max-content;
-  max-width: 100%;
+  width: 100%;
   min-width: 0;
 }
 
@@ -178,13 +176,13 @@ button {
 
 .icon-btn {
   min-width: 42px;
-  background: #fafafa;
+  background: #fff;
   font-size: 24px;
   line-height: 1;
 }
 
 .icon-btn:hover {
-  background: #f3f3f3;
+  background: #fff;
 }
 
 .primary-btn {
@@ -1181,7 +1179,7 @@ input[type="color"] {
   }
 
   .period-nav {
-    grid-template-columns: 34px minmax(0, auto) 34px;
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
     gap: 4px;
   }
 
