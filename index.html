@@ -10,15 +10,19 @@
   <main class="app-shell">
     <header class="topbar">
       <div class="week-nav" aria-label="Week navigation">
-        <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Open menu">☰</button>
-        <div class="page-menu hidden" id="pageMenu">
-          <button type="button" data-page="roster">Roster</button>
-          <button type="button" data-page="earnings">Pay / Earnings</button>
+        <div class="nav-left">
+          <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Open menu">☰</button>
+          <div class="page-menu hidden" id="pageMenu">
+            <button type="button" data-page="roster">Roster</button>
+            <button type="button" data-page="earnings">Pay / Earnings</button>
+          </div>
+          <button class="icon-btn" id="previousPeriod" type="button" aria-label="Previous">‹</button>
         </div>
-        <button class="icon-btn" id="previousPeriod" type="button" aria-label="Previous">‹</button>
         <div class="week-title" id="periodTitle">This Week</div>
-        <button class="icon-btn" id="nextPeriod" type="button" aria-label="Next">›</button>
-        <button class="secondary-btn top-sign-out hidden" id="signOutBtn" type="button">Sign out</button>
+        <div class="nav-right">
+          <button class="icon-btn" id="nextPeriod" type="button" aria-label="Next">›</button>
+          <button class="secondary-btn top-sign-out hidden" id="signOutBtn" type="button">Sign out</button>
+        </div>
       </div>
       <div class="view-tabs" aria-label="Roster view">
         <button class="view-tab active" type="button" data-view="weekly">Weekly</button>
@@ -31,7 +35,7 @@
         <button class="secondary-btn" id="manageWorkplacesBtn" type="button">Manage Workplaces</button>
       </div>
       <div class="sync-panel">
-        <span id="syncStatus">Local only</span>
+        <span class="hidden" id="syncStatus">Local only</span>
         <button class="secondary-btn" id="signInBtn" type="button">Sign in to sync</button>
       </div>
     </header>

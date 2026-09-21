@@ -53,9 +53,26 @@ button {
 .week-nav {
   position: relative;
   display: grid;
-  grid-template-columns: 32px 32px minmax(0, 1fr) 32px auto;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 6px;
+}
+
+.nav-left,
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.nav-left {
+  position: relative;
+  justify-content: flex-start;
+}
+
+.nav-right {
+  justify-content: flex-end;
 }
 
 .menu-btn {
@@ -1150,7 +1167,7 @@ input[type="color"] {
   }
 
   .week-nav {
-    grid-template-columns: 30px 30px minmax(0, 1fr) 30px auto;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   }
 
   .page-menu {

@@ -46,6 +46,7 @@
     addShiftBtn: document.getElementById("addShiftBtn"),
     manageWorkplacesBtn: document.getElementById("manageWorkplacesBtn"),
     syncStatus: document.getElementById("syncStatus"),
+    syncPanel: document.querySelector(".sync-panel"),
     signInBtn: document.getElementById("signInBtn"),
     signOutBtn: document.getElementById("signOutBtn"),
     viewTabs: document.querySelectorAll(".view-tab"),
@@ -499,6 +500,7 @@
     els.syncStatus.textContent = cloud.status;
     els.signInBtn.classList.toggle("hidden", !!cloud.user);
     els.signOutBtn.classList.toggle("hidden", !cloud.user);
+    els.syncPanel.classList.toggle("hidden", !!cloud.user);
   }
 
   function renderEarnings() {
