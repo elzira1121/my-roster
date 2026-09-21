@@ -115,6 +115,7 @@
     publicHolidayEveningRate: document.getElementById("publicHolidayEveningRate"),
     colorPresets: document.getElementById("colorPresets"),
     workplaceError: document.getElementById("workplaceError"),
+    workplaceMessage: document.getElementById("workplaceMessage"),
     workplaceList: document.getElementById("workplaceList"),
     cancelWorkplaceEdit: document.getElementById("cancelWorkplaceEdit"),
     previewModal: document.getElementById("previewModal"),
@@ -892,6 +893,7 @@
     var color = els.workplaceColor.value;
     var pay = readPaySettingsFromForm();
     els.workplaceError.textContent = "";
+    els.workplaceMessage.textContent = "";
 
     if (!name) {
       els.workplaceError.textContent = "Workplace name is required.";
@@ -922,6 +924,7 @@
 
     saveState();
     resetWorkplaceForm();
+    els.workplaceMessage.textContent = "Workplace saved.";
     renderWorkplaces();
     render();
   }
@@ -947,6 +950,8 @@
         '<button class="mini-btn" type="button">Edit</button>' +
         '<button class="mini-btn" type="button">Delete</button>';
       row.children[2].addEventListener("click", function () {
+        els.workplaceMessage.textContent = "";
+        els.workplaceError.textContent = "";
         els.workplaceId.value = workplace.id;
         els.workplaceName.value = workplace.name;
         els.workplaceColor.value = workplace.color;
@@ -962,6 +967,16 @@
   }
 
   function deleteWorkplace(id) {
+    var workplaceToDelete = getWorkplace(id);
+    var workplaceName = workplaceToDelete ? workplaceToDelete.name : "this workplace";
+    var hasShifts = state.shifts.some(function (shift) {
+      return shift.workplaceId === id;
+    });
+    var message = 'Delete "' + workplaceName + '"?';
+    if (hasShifts) message += "\n\nThis will also delete its shifts.";
+    if (!window.confirm(message)) return;
+    els.workplaceMessage.textContent = "";
+    els.workplaceError.textContent = "";
     state.workplaces = state.workplaces.filter(function (workplace) {
       return workplace.id !== id;
     });
@@ -980,6 +995,7 @@
     els.workplaceColor.value = presetColors[0];
     setPaySettingsForm();
     els.workplaceError.textContent = "";
+    els.workplaceMessage.textContent = "";
     renderColorPresetSelection();
   }
 
