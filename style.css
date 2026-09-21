@@ -52,32 +52,36 @@ button {
 
 .week-nav {
   position: relative;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(44px, 1fr) auto minmax(120px, 1fr);
   align-items: center;
-  justify-content: center;
+  gap: 10px;
   min-height: 36px;
-  padding: 0 156px 0 76px;
 }
 
 .nav-left,
 .nav-right {
-  position: absolute;
-  top: 50%;
   display: flex;
   align-items: center;
   gap: 6px;
   min-width: 0;
-  transform: translateY(-50%);
 }
 
 .nav-left {
-  left: 0;
+  position: relative;
   justify-content: flex-start;
 }
 
 .nav-right {
-  right: 0;
   justify-content: flex-end;
+}
+
+.period-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
 }
 
 .menu-btn {
@@ -1157,12 +1161,17 @@ input[type="color"] {
   }
 
   .week-title {
-    font-size: 15px;
+    font-size: 14px;
   }
 
   .week-nav {
+    grid-template-columns: auto minmax(0, 1fr) auto;
     min-height: 34px;
-    padding: 0 134px 0 72px;
+    gap: 5px;
+  }
+
+  .period-nav {
+    gap: 4px;
   }
 
   .page-menu {
