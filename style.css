@@ -76,16 +76,6 @@ button {
   justify-content: flex-end;
 }
 
-.period-nav {
-  display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) 42px;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  width: 100%;
-  min-width: 0;
-}
-
 .menu-btn {
   font-size: 18px;
 }
@@ -1176,11 +1166,6 @@ input[type="color"] {
     grid-template-columns: minmax(34px, 1fr) minmax(0, auto) minmax(86px, 1fr);
     min-height: 34px;
     gap: 5px;
-  }
-
-  .period-nav {
-    grid-template-columns: 34px minmax(0, 1fr) 34px;
-    gap: 4px;
   }
 
   .page-menu {

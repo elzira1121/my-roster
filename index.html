@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Weekly Roster</title>
-  <link rel="stylesheet" href="style.css?v=20260921-2" />
+  <link rel="stylesheet" href="style.css?v=20260921-3" />
 </head>
 <body>
   <main class="app-shell">
@@ -16,13 +16,11 @@
             <button type="button" data-page="roster">Roster</button>
             <button type="button" data-page="earnings">Pay / Earnings</button>
           </div>
-        </div>
-        <div class="period-nav">
           <button class="icon-btn" id="previousPeriod" type="button" aria-label="Previous">‹</button>
-          <div class="week-title" id="periodTitle">This Week</div>
-          <button class="icon-btn" id="nextPeriod" type="button" aria-label="Next">›</button>
         </div>
+        <div class="week-title" id="periodTitle">This Week</div>
         <div class="nav-right">
+          <button class="icon-btn" id="nextPeriod" type="button" aria-label="Next">›</button>
           <button class="secondary-btn top-sync-btn" id="signInBtn" type="button">Sign in to sync</button>
           <button class="secondary-btn top-sign-out hidden" id="signOutBtn" type="button">Sign out</button>
         </div>
@@ -358,6 +356,6 @@
   <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js"></script>
-  <script src="app.js?v=20260921-2"></script>
+  <script src="app.js?v=20260921-3"></script>
 </body>
 </html>
