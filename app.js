@@ -302,7 +302,8 @@
 
   function fitWeeklyBoard() {
     var boardTop = els.weeklyView.getBoundingClientRect().top + getHeaderHeight();
-    var available = Math.max(window.innerHeight - boardTop - 4, 320);
+    var maxHeight = window.innerWidth > 760 ? 900 : 760;
+    var available = Math.min(Math.max(window.innerHeight - boardTop - 4, 320), maxHeight);
     document.documentElement.style.setProperty("--board-height", available + "px");
   }
 
