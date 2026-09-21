@@ -53,7 +53,7 @@ button {
 .week-nav {
   position: relative;
   display: grid;
-  grid-template-columns: 32px 32px 1fr 32px;
+  grid-template-columns: 32px 32px minmax(0, 1fr) 32px auto;
   align-items: center;
   gap: 6px;
 }
@@ -131,7 +131,7 @@ button {
 
 .sync-panel {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 8px;
   color: var(--muted);
@@ -172,6 +172,13 @@ button {
 
 .secondary-btn {
   padding: 0 12px;
+}
+
+.top-sign-out {
+  min-height: 32px;
+  padding: 0 12px;
+  white-space: nowrap;
+  font-size: 12px;
 }
 
 .danger-btn {
@@ -1143,7 +1150,7 @@ input[type="color"] {
   }
 
   .week-nav {
-    grid-template-columns: 30px 30px 1fr 30px;
+    grid-template-columns: 30px 30px minmax(0, 1fr) 30px auto;
   }
 
   .page-menu {
@@ -1164,6 +1171,12 @@ input[type="color"] {
   .sync-panel .secondary-btn {
     min-height: 28px;
     padding: 0 6px;
+    font-size: 10px;
+  }
+
+  .top-sign-out {
+    min-height: 30px;
+    padding: 0 8px;
     font-size: 10px;
   }
 
