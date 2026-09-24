@@ -1306,6 +1306,17 @@ input[type="color"] {
     padding: 4px 3px;
   }
 
+  .shift-place {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-height: 1.05;
+  }
+
   .month-day {
     padding: 4px 3px;
   }
