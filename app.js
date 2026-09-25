@@ -63,6 +63,8 @@
     earningsPay: document.getElementById("earningsPay"),
     earningsCalendarPanel: document.getElementById("earningsCalendarPanel"),
     earningsCalendar: document.getElementById("earningsCalendar"),
+    earningsChartPanel: document.getElementById("earningsChartPanel"),
+    earningsChart: document.getElementById("earningsChart"),
     earningsBreakdown: document.getElementById("earningsBreakdown"),
     editPayRatesBtn: document.getElementById("editPayRatesBtn"),
     holidayForm: document.getElementById("holidayForm"),
@@ -515,6 +517,7 @@
     els.earningsHours.textContent = formatHours(earnings.hours) + " hours";
     els.earningsPay.textContent = "Estimated gross pay: " + formatCurrency(earnings.pay);
     renderEarningsCalendar();
+    renderEarningsChart();
     els.earningsBreakdown.innerHTML = "";
 
     if (Object.keys(earnings.byWorkplace).length === 0) {
@@ -583,6 +586,46 @@
       }(dateString));
       els.earningsCalendar.appendChild(cell);
     }
+  }
+
+  function renderEarningsChart() {
+    var showChart = activeView === "yearly";
+    els.earningsChartPanel.classList.toggle("hidden", !showChart);
+    els.earningsChart.innerHTML = "";
+    if (!showChart) return;
+
+    var year = selectedDate.getFullYear();
+    var monthlyTotals = [];
+    var maxPay = 0;
+    for (var month = 0; month < 12; month += 1) {
+      var range = getMonthRange(year, month);
+      var earnings = getEarningsTotals(getShiftsInRange(range.start, range.end));
+      monthlyTotals.push(earnings);
+      maxPay = Math.max(maxPay, earnings.pay);
+    }
+
+    var axis = document.createElement("div");
+    axis.className = "earnings-chart-axis";
+    axis.innerHTML = '<span>' + escapeHTML(formatCompactCurrency(maxPay)) + '</span><span>' + escapeHTML(formatCompactCurrency(maxPay / 2)) + '</span><span>$0</span>';
+    els.earningsChart.appendChild(axis);
+
+    var bars = document.createElement("div");
+    bars.className = "earnings-chart-bars";
+    monthlyTotals.forEach(function (item, month) {
+      var bar = document.createElement("div");
+      var height = maxPay > 0 ? Math.max((item.pay / maxPay) * 100, item.pay > 0 ? 6 : 0) : 0;
+      bar.className = "earnings-chart-month";
+      if (item.pay <= 0) bar.classList.add("no-pay");
+      if (month === selectedDate.getMonth()) bar.classList.add("active");
+      bar.innerHTML =
+        '<span class="chart-plot" style="--bar-height:' + height.toFixed(2) + '%">' +
+          '<span class="chart-value">' + escapeHTML(item.pay > 0 ? formatCurrency(item.pay) : "$0.00") + '</span>' +
+          '<span class="chart-bar"></span>' +
+        '</span>' +
+        '<span class="chart-label">' + escapeHTML(monthNames[month].slice(0, 3)) + '</span>';
+      bars.appendChild(bar);
+    });
+    els.earningsChart.appendChild(bars);
   }
 
   function renderPayDetailRows(details, range) {
@@ -1569,6 +1612,12 @@
 
   function formatCurrency(amount) {
     return "$" + (Number(amount) || 0).toFixed(2);
+  }
+
+  function formatCompactCurrency(amount) {
+    var value = Number(amount) || 0;
+    if (value >= 1000) return "$" + (value / 1000).toFixed(value >= 10000 ? 0 : 1).replace(/\.0$/, "") + "k";
+    return "$" + Math.round(value);
   }
 
   function formatMultiplier(multiplier) {
