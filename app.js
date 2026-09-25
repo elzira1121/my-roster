@@ -526,7 +526,11 @@
       empty.textContent = "No shifts in this period.";
       els.earningsBreakdown.appendChild(empty);
     } else {
-      Object.keys(earnings.byWorkplace).forEach(function (id) {
+      var workplaceIds = Object.keys(earnings.byWorkplace).sort(function (a, b) {
+        return earnings.byWorkplace[b].pay - earnings.byWorkplace[a].pay;
+      });
+      els.earningsBreakdown.appendChild(renderWorkplacePaySummary(workplaceIds, earnings));
+      workplaceIds.forEach(function (id) {
         var workplace = getWorkplace(id);
         var item = earnings.byWorkplace[id];
         var row = document.createElement("div");
@@ -546,6 +550,34 @@
     }
 
     renderHolidayList();
+  }
+
+  function renderWorkplacePaySummary(workplaceIds, earnings) {
+    var summary = document.createElement("div");
+    summary.className = "workplace-pay-summary";
+    summary.innerHTML =
+      '<div class="workplace-pay-summary-head">' +
+        '<span>Workplace</span><span>Total hours</span><span>Estimated gross pay</span><span>Percentage</span><span></span>' +
+      '</div>' +
+      workplaceIds.map(function (id) {
+        var workplace = getWorkplace(id);
+        var item = earnings.byWorkplace[id];
+        var color = workplace ? workplace.color : "#7a7f86";
+        var name = workplace ? workplace.name : "Deleted workplace";
+        var percent = earnings.pay > 0 ? (item.pay / earnings.pay) * 100 : 0;
+        var percentLabel = Math.round(percent) + "%";
+        var barWidth = Math.max(0, Math.min(percent, 100)).toFixed(2) + "%";
+        return (
+          '<div class="workplace-pay-summary-row">' +
+            '<span class="summary-workplace"><i class="summary-dot" style="background:' + escapeHTML(color) + '"></i>' + escapeHTML(name) + '</span>' +
+            '<span class="summary-hours">' + escapeHTML(formatHours(item.hours)) + ' h</span>' +
+            '<b class="summary-pay">' + escapeHTML(formatCurrency(item.pay)) + '</b>' +
+            '<span class="summary-percent">' + escapeHTML(percentLabel) + '</span>' +
+            '<span class="summary-bar-track"><i class="summary-bar-fill" style="width:' + escapeHTML(barWidth) + ';background:' + escapeHTML(color) + '"></i></span>' +
+          '</div>'
+        );
+      }).join("");
+    return summary;
   }
 
   function renderEarningsCalendar() {
