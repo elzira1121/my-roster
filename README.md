@@ -23,6 +23,9 @@ The app runs in the browser with HTML, CSS, and vanilla JavaScript. It can work 
 - Workplace base hourly rates, editable pay split times, penalty multipliers, and final hourly rate previews
 - Payslip-style earnings details grouped by ordinary and penalty rates
 - Weekly, monthly, and yearly estimated gross pay
+- Monthly earnings calendar with daily estimated income and rest-day indicators
+- Yearly monthly earnings bar chart with rounded scale labels
+- Workplace earnings summary with hours, estimated gross pay, percentage share, and progress bars
 - Manually added public holidays with optional notes
 - Persistent browser storage with `localStorage`
 - Optional Firebase sync with email/password sign-in
@@ -100,10 +103,15 @@ It shows:
 
 - Total hours for the current week, month, or year
 - Estimated gross pay for the selected period
-- A workplace-level breakdown with hours and pay
+- A workplace-level summary with hours, estimated gross pay, percentage share, and visual progress bars
+- A workplace-level detail breakdown with hours and pay by rule
 - Payslip-style detail rows with description, hours, final hourly rate, period begin/end dates, and earnings
 - A public holiday list for dates that should use public holiday rules
 - Automatic shift splitting when a shift crosses a pay boundary
+
+In the monthly earnings view, a calendar under the estimated gross pay card shows each day's estimated income. Days without shifts are shown as rest days.
+
+In the yearly earnings view, a monthly bar chart under the estimated gross pay card shows estimated income by month. The chart scale adjusts to the current data and uses rounded labels.
 
 Pay is estimated as:
 
