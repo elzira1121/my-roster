@@ -61,6 +61,8 @@
     earningsPeriodLabel: document.getElementById("earningsPeriodLabel"),
     earningsHours: document.getElementById("earningsHours"),
     earningsPay: document.getElementById("earningsPay"),
+    earningsCalendarPanel: document.getElementById("earningsCalendarPanel"),
+    earningsCalendar: document.getElementById("earningsCalendar"),
     earningsBreakdown: document.getElementById("earningsBreakdown"),
     editPayRatesBtn: document.getElementById("editPayRatesBtn"),
     holidayForm: document.getElementById("holidayForm"),
@@ -512,6 +514,7 @@
     els.earningsPeriodLabel.textContent = activeView === "yearly" ? label + " " + selectedDate.getFullYear() : label;
     els.earningsHours.textContent = formatHours(earnings.hours) + " hours";
     els.earningsPay.textContent = "Estimated gross pay: " + formatCurrency(earnings.pay);
+    renderEarningsCalendar();
     els.earningsBreakdown.innerHTML = "";
 
     if (Object.keys(earnings.byWorkplace).length === 0) {
@@ -540,6 +543,46 @@
     }
 
     renderHolidayList();
+  }
+
+  function renderEarningsCalendar() {
+    var showCalendar = activeView === "monthly";
+    els.earningsCalendarPanel.classList.toggle("hidden", !showCalendar);
+    els.earningsCalendar.innerHTML = "";
+    if (!showCalendar) return;
+
+    dayNames.forEach(function (day) {
+      var weekday = document.createElement("div");
+      weekday.className = "earnings-calendar-weekday";
+      weekday.textContent = day;
+      els.earningsCalendar.appendChild(weekday);
+    });
+
+    var monthStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+    var gridStart = startOfWeek(monthStart);
+    for (var index = 0; index < 42; index += 1) {
+      var date = addDays(gridStart, index);
+      var dateString = toISODate(date);
+      var isCurrentMonth = date.getMonth() === selectedDate.getMonth();
+      var shifts = getShiftsForDate(dateString);
+      var daily = getEarningsTotals(shifts);
+      var cell = document.createElement("button");
+      cell.type = "button";
+      cell.className = "earnings-day";
+      if (!isCurrentMonth) cell.classList.add("outside");
+      if (isSameDate(date, new Date())) cell.classList.add("today");
+      if (isCurrentMonth && shifts.length > 0) cell.classList.add("has-pay");
+      if (isCurrentMonth && shifts.length === 0) cell.classList.add("rest-day");
+      cell.innerHTML =
+        '<strong>' + date.getDate() + '</strong>' +
+        '<span>' + (isCurrentMonth ? (shifts.length > 0 ? escapeHTML(formatCurrency(daily.pay)) : "Rest") : "") + '</span>';
+      cell.addEventListener("click", function (targetDate) {
+        return function () {
+          openDayPreview(targetDate);
+        };
+      }(dateString));
+      els.earningsCalendar.appendChild(cell);
+    }
   }
 
   function renderPayDetailRows(details, range) {

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Weekly Roster</title>
-  <link rel="stylesheet" href="style.css?v=20260924-1" />
+  <link rel="stylesheet" href="style.css?v=20260926-1" />
 </head>
 <body>
   <main class="app-shell">
@@ -66,6 +66,12 @@
         <strong id="earningsHours">0 hours</strong>
         <b id="earningsPay">$0.00</b>
       </div>
+      <section class="earnings-calendar-panel hidden" id="earningsCalendarPanel" aria-label="Daily earnings calendar">
+        <div class="panel-head">
+          <h2>Daily earnings</h2>
+        </div>
+        <div class="earnings-calendar" id="earningsCalendar"></div>
+      </section>
       <div class="earnings-grid">
         <section class="earnings-panel">
           <div class="panel-head">
@@ -357,6 +363,6 @@
   <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js"></script>
-  <script src="app.js?v=20260924-1"></script>
+  <script src="app.js?v=20260926-1"></script>
 </body>
 </html>

@@ -451,6 +451,13 @@ button {
   background: #fff;
 }
 
+.earnings-calendar-panel {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
 .panel-head {
   display: flex;
   align-items: center;
@@ -470,6 +477,73 @@ button {
   display: grid;
   gap: 7px;
   padding: 10px;
+}
+
+.earnings-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+  padding: 10px;
+}
+
+.earnings-calendar-weekday {
+  display: grid;
+  place-items: center;
+  min-height: 24px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.earnings-day {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 4px;
+  min-height: 82px;
+  padding: 8px 4px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: #f1fff7;
+  color: var(--ink);
+  text-align: center;
+}
+
+.earnings-day strong {
+  font-size: clamp(18px, 2.3vw, 28px);
+  line-height: 1;
+}
+
+.earnings-day span {
+  min-width: 0;
+  overflow: hidden;
+  color: #10a86d;
+  font-size: clamp(11px, 1.25vw, 15px);
+  font-weight: 900;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.earnings-day.has-pay {
+  background: #fff1f3;
+}
+
+.earnings-day.has-pay span {
+  color: var(--red);
+}
+
+.earnings-day.outside {
+  background: #fafafa;
+  color: #bdc2c7;
+}
+
+.earnings-day.outside span {
+  color: #c6cbd0;
+}
+
+.earnings-day.today {
+  border-color: var(--red);
 }
 
 .earning-card {
@@ -1213,6 +1287,31 @@ input[type="color"] {
 
   .earnings-hero {
     padding: 12px;
+  }
+
+  .earnings-calendar {
+    gap: 3px;
+    padding: 8px;
+  }
+
+  .earnings-calendar-weekday {
+    min-height: 20px;
+    font-size: 10px;
+  }
+
+  .earnings-day {
+    min-height: 58px;
+    gap: 3px;
+    padding: 5px 2px;
+    border-radius: 5px;
+  }
+
+  .earnings-day strong {
+    font-size: 16px;
+  }
+
+  .earnings-day span {
+    font-size: 9px;
   }
 
   .earning-total {
