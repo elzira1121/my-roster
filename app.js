@@ -603,17 +603,18 @@
       monthlyTotals.push(earnings);
       maxPay = Math.max(maxPay, earnings.pay);
     }
+    var chartMax = getNiceChartMax(maxPay);
 
     var axis = document.createElement("div");
     axis.className = "earnings-chart-axis";
-    axis.innerHTML = '<span>' + escapeHTML(formatCompactCurrency(maxPay)) + '</span><span>' + escapeHTML(formatCompactCurrency(maxPay / 2)) + '</span><span>$0</span>';
+    axis.innerHTML = '<span>' + escapeHTML(formatCompactCurrency(chartMax)) + '</span><span>' + escapeHTML(formatCompactCurrency(chartMax / 2)) + '</span><span>$0</span>';
     els.earningsChart.appendChild(axis);
 
     var bars = document.createElement("div");
     bars.className = "earnings-chart-bars";
     monthlyTotals.forEach(function (item, month) {
       var bar = document.createElement("div");
-      var height = maxPay > 0 ? Math.max((item.pay / maxPay) * 100, item.pay > 0 ? 6 : 0) : 0;
+      var height = chartMax > 0 ? Math.max((item.pay / chartMax) * 100, item.pay > 0 ? 6 : 0) : 0;
       bar.className = "earnings-chart-month";
       if (item.pay <= 0) bar.classList.add("no-pay");
       if (month === selectedDate.getMonth()) bar.classList.add("active");
@@ -1618,6 +1619,13 @@
     var value = Number(amount) || 0;
     if (value >= 1000) return "$" + (value / 1000).toFixed(value >= 10000 ? 0 : 1).replace(/\.0$/, "") + "k";
     return "$" + Math.round(value);
+  }
+
+  function getNiceChartMax(value) {
+    var amount = Number(value) || 0;
+    if (amount <= 0) return 0;
+    var step = amount <= 1000 ? 250 : amount <= 5000 ? 500 : amount <= 10000 ? 1000 : 2000;
+    return Math.ceil(amount / step) * step;
   }
 
   function formatMultiplier(multiplier) {
